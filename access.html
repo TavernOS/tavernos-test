@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="TavernOS early-access install guide. Unlisted.">
+<title>TavernOS · early access</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --navy:      #0F2236;
+  --teal:      #009688;
+  --teal-soft: #4DB6AC;
+  --paper:     #FAFAF7;
+  --paper-2:   #F2F1EA;
+  --rule:      #D8D5C8;
+  --ink:       #1B1B1B;
+  --dim:       #5A5C63;
+  --code-bg:   #0F2236;
+  --code-ink:  #E8E6DD;
+  --code-teal: #5EEAD4;
+  --warn-bg:   #FFF8E1;
+  --warn-rule: #E6C565;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 400;
+  background: var(--paper);
+  color: var(--ink);
+  min-height: 100vh;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(ellipse at top right, rgba(0, 150, 136, 0.035) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.stage {
+  position: relative;
+  z-index: 1;
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 56px 32px 80px;
+}
+
+/* Topbar */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 48px;
+}
+
+.wordmark {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  font-variation-settings: "opsz" 144, "SOFT" 20;
+  font-size: 24px;
+  letter-spacing: -0.02em;
+  color: var(--navy);
+  text-decoration: none;
+}
+
+.wordmark .dot {
+  color: var(--teal);
+  font-style: italic;
+  font-variation-settings: "opsz" 144, "SOFT" 80, "WONK" 1;
+}
+
+.crumb {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--dim);
+  font-weight: 500;
+}
+
+/* Hero */
+.hero {
+  margin-bottom: 52px;
+}
+
+.kicker {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 20px;
+}
+
+.hero h1 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 400;
+  font-variation-settings: "opsz" 144, "SOFT" 30;
+  font-size: clamp(36px, 5vw, 52px);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: var(--navy);
+  margin-bottom: 24px;
+}
+
+.hero h1 em {
+  font-style: italic;
+  font-variation-settings: "opsz" 144, "SOFT" 70, "WONK" 1;
+  color: var(--teal);
+}
+
+.hero p {
+  font-size: 17px;
+  color: var(--ink);
+  max-width: 640px;
+  margin-bottom: 14px;
+}
+
+.hero p.sub {
+  font-size: 15px;
+  color: var(--dim);
+}
+
+/* Callout */
+.callout {
+  background: var(--warn-bg);
+  border-left: 3px solid var(--warn-rule);
+  padding: 18px 22px;
+  margin: 32px 0 40px;
+  font-size: 14px;
+  color: var(--navy);
+  line-height: 1.55;
+}
+
+.callout strong {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 4px;
+  letter-spacing: 0.03em;
+}
+
+/* Section heading */
+h2.section {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  font-variation-settings: "opsz" 144, "SOFT" 20;
+  font-size: 28px;
+  letter-spacing: -0.015em;
+  color: var(--navy);
+  margin: 56px 0 20px;
+  padding-top: 24px;
+  border-top: 1px solid var(--rule);
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+}
+
+h2.section .step-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--teal);
+  letter-spacing: 0.05em;
+}
+
+/* Body prose */
+p.body {
+  font-size: 15px;
+  color: var(--ink);
+  margin: 12px 0 18px;
+  max-width: 680px;
+}
+
+p.body + p.body {
+  margin-top: -4px;
+}
+
+ul.body {
+  margin: 12px 0 20px 4px;
+  padding-left: 20px;
+  list-style: none;
+}
+
+ul.body li {
+  font-size: 15px;
+  color: var(--ink);
+  padding: 4px 0;
+  position: relative;
+}
+
+ul.body li::before {
+  content: '→';
+  position: absolute;
+  left: -20px;
+  color: var(--teal);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  top: 6px;
+}
+
+ul.body li code {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  background: var(--paper-2);
+  padding: 2px 6px;
+  border-radius: 3px;
+  color: var(--navy);
+}
+
+/* Code blocks */
+.code {
+  position: relative;
+  background: var(--code-bg);
+  color: var(--code-ink);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13.5px;
+  line-height: 1.7;
+  padding: 18px 22px;
+  border-radius: 4px;
+  margin: 16px 0 22px;
+  overflow-x: auto;
+  white-space: pre;
+  tab-size: 2;
+}
+
+.code .prompt { color: var(--code-teal); user-select: none; }
+.code .c      { color: #8B8B7E; font-style: italic; }
+.code .k      { color: var(--code-teal); }
+.code .s      { color: #F8D678; }
+
+.copy-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--code-ink);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s ease, background 0.2s ease;
+}
+
+.code:hover .copy-btn { opacity: 1; }
+
+.copy-btn:hover   { background: rgba(94, 234, 212, 0.15); }
+.copy-btn.copied  { background: var(--teal); color: var(--paper); border-color: var(--teal); }
+
+/* Download button — primary action on Step 02 */
+.download-btn {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 20px 26px;
+  background: var(--navy);
+  color: var(--paper);
+  text-decoration: none;
+  border-radius: 4px;
+  margin: 22px 0 16px;
+  transition: background 0.25s ease, transform 0.2s cubic-bezier(0.2, 0.9, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.download-btn:hover {
+  background: var(--teal);
+  transform: translateY(-2px);
+}
+
+.download-label {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  font-variation-settings: "opsz" 72, "SOFT" 30;
+  font-size: 20px;
+  letter-spacing: -0.01em;
+  flex: 1;
+}
+
+.download-meta {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11.5px;
+  opacity: 0.7;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.download-arrow {
+  font-size: 20px;
+  transition: transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1);
+  line-height: 1;
+}
+
+.download-btn:hover .download-arrow {
+  transform: translateY(4px);
+}
+
+@media (max-width: 560px) {
+  .download-btn { flex-wrap: wrap; gap: 8px 16px; padding: 16px 20px; }
+  .download-meta { width: 100%; order: 3; opacity: 0.55; }
+}
+
+/* Inline code */
+code.inline {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  background: var(--paper-2);
+  padding: 2px 7px;
+  border-radius: 3px;
+  color: var(--navy);
+}
+
+/* Key-value list */
+.prereqs {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 8px 24px;
+  margin: 16px 0 24px;
+  padding: 20px 24px;
+  background: var(--paper-2);
+  border-radius: 4px;
+}
+
+.prereqs dt {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12.5px;
+  color: var(--dim);
+  letter-spacing: 0.04em;
+  padding-top: 2px;
+}
+
+.prereqs dd {
+  font-size: 14px;
+  color: var(--ink);
+}
+
+.prereqs dd a {
+  color: var(--teal);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease;
+}
+
+.prereqs dd a:hover {
+  border-color: var(--teal);
+}
+
+@media (max-width: 560px) {
+  .prereqs { grid-template-columns: 1fr; gap: 4px 0; padding: 16px 18px; }
+  .prereqs dt { padding-top: 10px; }
+  .prereqs dt:first-child { padding-top: 0; }
+}
+
+/* Footer */
+.foot {
+  margin-top: 72px;
+  padding-top: 28px;
+  border-top: 1px solid var(--rule);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 13px;
+  color: var(--dim);
+}
+
+.foot a {
+  color: var(--teal);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease;
+}
+
+.foot a:hover { border-color: var(--teal); }
+
+@media (max-width: 560px) {
+  .stage { padding: 40px 22px 64px; }
+  .foot { flex-direction: column; gap: 8px; align-items: flex-start; }
+}
+
+::selection {
+  background: var(--teal);
+  color: var(--paper);
+}
+</style>
+</head>
+<body>
+
+<div class="stage">
+
+  <div class="topbar">
+    <a href="/" class="wordmark">TavernOS<span class="dot">.</span></a>
+    <div class="crumb">Early access · unlisted</div>
+  </div>
+
+  <div class="hero">
+    <div class="kicker">For design partners · private link</div>
+    <h1>Getting you <em>running.</em></h1>
+    <p class="body">
+      Thanks for being willing to try this. This page walks you through everything — every click, every line to copy, even the boring bits. If you've set up software before, parts of it will feel over-explained. If you haven't, that's the point. Plan on 20–30 minutes the first time; five seconds every time after that.
+    </p>
+    <p class="body sub">
+      TavernOS runs on your own computer and uses Anthropic's AI to do its thinking. None of your data leaves your machine except the specific questions you ask the AI. You'll need an Anthropic account with about $10 of AI credit added (you won't spend most of it) and — if you're on Windows — about 30 minutes. If you hit anything that doesn't match this page, email <a href="mailto:contact@TavernOS.ai" style="color: var(--teal); text-decoration: none; border-bottom: 1px solid currentColor;">contact@TavernOS.ai</a> and I'll jump on a call.
+    </p>
+  </div>
+
+  <div class="callout">
+    <strong>This is a pre-alpha.</strong>
+    Things will occasionally misbehave — that's normal for early software. The most useful thing you can do is tell me when something surprises you, good or bad. We'll do a 15-minute check-in at the end of week 1 and a short debrief at the end of week 2.
+  </div>
+
+  <div class="callout" style="background: #EAF6F5; border-left-color: var(--teal);">
+    <strong>On a Mac?</strong>
+    The install is similar but a few commands differ. Rather than have you guess, email <a href="mailto:contact@TavernOS.ai" style="color: var(--teal);">contact@TavernOS.ai</a> and I'll walk you through it on a 15-minute call. The instructions below are written for Windows 10 or 11.
+  </div>
+
+  <!-- STEP 1 -->
+  <h2 class="section"><span class="step-num">01</span> Download TavernOS</h2>
+  <p class="body">
+    Click the button below. Your browser downloads a file called <code class="inline">tavernos-alpha.zip</code> — by default it lands in your <code class="inline">Downloads</code> folder.
+  </p>
+
+  <a class="download-btn" href="/download/tavernos-alpha.zip" download>
+    <span class="download-label">Download TavernOS</span>
+    <span class="download-meta">ZIP · latest alpha</span>
+    <span class="download-arrow">↓</span>
+  </a>
+
+  <p class="body">Now unzip it:</p>
+  <ul class="body">
+    <li>Open <strong>File Explorer</strong> (click the yellow folder icon in your taskbar, or press the Windows key + E).</li>
+    <li>Click <strong>Downloads</strong> in the left sidebar.</li>
+    <li>Find <code class="inline">tavernos-alpha.zip</code> in the list. Right-click it → <strong>Extract All…</strong> → click <strong>Extract</strong>.</li>
+    <li>A new folder called <code class="inline">tavernos-alpha</code> appears in Downloads. You can close any windows that pop up.</li>
+  </ul>
+
+  <!-- STEP 2 -->
+  <h2 class="section"><span class="step-num">02</span> Install Python</h2>
+  <p class="body">
+    Python is the programming language TavernOS is built on. If it's not already on your machine, install it now — it's free, takes about two minutes, and is safe to leave installed afterward.
+  </p>
+  <ul class="body">
+    <li>Open <a href="https://www.python.org/downloads/" style="color: var(--teal); text-decoration: none; border-bottom: 1px solid currentColor;">python.org/downloads</a> in your browser.</li>
+    <li>Click the large yellow button that says <strong>Download Python 3.XX</strong> (any version 3.12 or newer).</li>
+    <li>When the download finishes, open the file — it will be in your Downloads folder and named something like <code class="inline">python-3.12.X-amd64.exe</code>.</li>
+  </ul>
+
+  <div class="callout">
+    <strong>Critical checkbox.</strong>
+    On the first screen of the Python installer, look at the bottom for a checkbox that says <strong>"Add python.exe to PATH"</strong>. <strong>Tick this box before clicking anything else.</strong> If you skip it, the rest of this guide won't work and you'll have to reinstall Python to fix it.
+  </div>
+
+  <ul class="body">
+    <li>Click <strong>Install Now</strong>. Wait for it to finish (about 2 minutes).</li>
+    <li>Click <strong>Close</strong> when it says "Setup was successful."</li>
+  </ul>
+
+  <p class="body sub">
+    Already had Python installed? That's fine — the installer will tell you, and you can close it without doing anything.
+  </p>
+
+  <!-- STEP 3 -->
+  <h2 class="section"><span class="step-num">03</span> Open PowerShell</h2>
+  <p class="body">
+    PowerShell is the text-based window you'll type commands into. It's built into Windows, you just need to open it.
+  </p>
+  <ul class="body">
+    <li>Click the <strong>Windows Start button</strong> in the bottom-left corner of your screen (the Windows logo).</li>
+    <li>Type <code>PowerShell</code> — as you type, results appear above the search bar.</li>
+    <li>Click <strong>Windows PowerShell</strong> in the results. A dark-blue window opens showing white text.</li>
+    <li>Leave this window open — you'll use it for all the remaining steps.</li>
+  </ul>
+
+  <p class="body sub">
+    The text in PowerShell will look intimidating but it's just where commands go. You're going to paste a few things into it. That's it.
+  </p>
+
+  <!-- STEP 4 -->
+  <h2 class="section"><span class="step-num">04</span> Go to the TavernOS folder</h2>
+  <p class="body">
+    You need to tell PowerShell which folder to work in. Copy the line below, paste it into PowerShell, and press <strong>Enter</strong>.
+  </p>
+
+  <div class="code">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>cd $HOME\Downloads\tavernos-alpha</div>
+
+  <p class="body">
+    To paste into PowerShell: click the Copy button on the code block above, then <strong>right-click anywhere inside the PowerShell window</strong>. Right-click is how PowerShell pastes. Press <strong>Enter</strong> after.
+  </p>
+  <p class="body sub">
+    If it worked, the prompt at the bottom of PowerShell now ends with <code class="inline">tavernos-alpha&gt;</code>. If it says "Cannot find path" or similar, the unzipped folder landed somewhere else — email me and we'll sort it.
+  </p>
+
+  <!-- STEP 5 -->
+  <h2 class="section"><span class="step-num">05</span> Install TavernOS</h2>
+  <p class="body">
+    Copy the entire block below in one go. Paste it into PowerShell (right-click to paste) and press <strong>Enter</strong>. It runs all four commands in sequence.
+  </p>
+
+  <div class="code">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt</div>
+
+  <p class="body">
+    A lot of text will scroll past. This is normal — it's downloading the pieces TavernOS needs. Wait until text stops scrolling and the prompt comes back (ending in <code class="inline">tavernos-alpha&gt;</code>). Usually 1–3 minutes depending on your internet speed.
+  </p>
+  <p class="body sub">
+    You'll also notice the prompt now starts with <code class="inline">(.venv)</code>. That means you're in the right environment. Good sign.
+  </p>
+
+  <!-- STEP 6 -->
+  <h2 class="section"><span class="step-num">06</span> Get your Anthropic API key</h2>
+  <p class="body">
+    TavernOS uses Anthropic's Claude AI for its thinking. You need an Anthropic account with a small amount of credit added. Budget about $10 — you'll use maybe a dollar during the trial; the rest stays on your account.
+  </p>
+  <ul class="body">
+    <li>Open <a href="https://console.anthropic.com" style="color: var(--teal); text-decoration: none; border-bottom: 1px solid currentColor;">console.anthropic.com</a> in your browser.</li>
+    <li>Click <strong>Sign up</strong> (or <strong>Log in</strong> if you already have an account). Verify your email if asked.</li>
+    <li>Once you're in, click <strong>Plans &amp; Billing</strong> in the left sidebar → <strong>Add to credit balance</strong> → add $10 and pay.</li>
+    <li>In the same left sidebar, click <strong>API Keys</strong>.</li>
+    <li>Click the <strong>Create Key</strong> button.</li>
+    <li>Give it a name you'll remember — "TavernOS" works.</li>
+    <li>Click <strong>Create</strong>. A long string starting with <code class="inline">sk-ant-</code> appears.</li>
+    <li>Click <strong>Copy</strong> next to the key. Paste it into a Notes app or sticky note — <strong>you can't see the full key again once you close this page.</strong> Don't worry if you lose it; you just create a new one.</li>
+  </ul>
+
+  <!-- STEP 7 -->
+  <h2 class="section"><span class="step-num">07</span> First run</h2>
+  <p class="body">
+    Go back to PowerShell. Type this and press <strong>Enter</strong>:
+  </p>
+
+  <div class="code">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>python norm.py</div>
+
+  <p class="body">
+    TavernOS will start up and ask you to paste your API key (the one starting with <code class="inline">sk-ant-</code>).
+  </p>
+  <ul class="body">
+    <li>Right-click inside PowerShell to paste your key.</li>
+    <li>Press <strong>Enter</strong>.</li>
+    <li>You're in. You'll see a welcome message and a prompt where you can type.</li>
+  </ul>
+
+  <!-- STEP 8 -->
+  <h2 class="section"><span class="step-num">08</span> Try it</h2>
+  <p class="body">
+    You're now talking to Sam, a coordinator who routes your request to the right specialist agent. Try one of these by typing it and pressing <strong>Enter</strong>:
+  </p>
+  <ul class="body">
+    <li><code>build me a short proposal for a $5k operational audit engagement</code></li>
+    <li><code>Cliff, research SMB project-management tool adoption in creative agencies</code></li>
+    <li><code>/eval last</code> — shows a score for the most recent deliverable</li>
+    <li><code>/scores --deliverables</code> — lists everything TavernOS has produced</li>
+    <li><code>/exit</code> — quits (you can come back anytime, see Step 10)</li>
+  </ul>
+  <p class="body">
+    Finished deliverables land in this folder on your computer:
+  </p>
+  <div class="code">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>C:\Users\YOUR_USERNAME\.tavernos\clients\_self\deliverables\</div>
+  <p class="body sub">
+    Open them in Word, Excel, or whatever opens <code class="inline">.docx</code> / <code class="inline">.xlsx</code> / <code class="inline">.pptx</code> files. Tell me what's good, what's wrong, what's weird. That's the whole trial.
+  </p>
+
+  <!-- STEP 9 -->
+  <h2 class="section"><span class="step-num">09</span> Prefer a browser? Try web mode</h2>
+  <p class="body">
+    If you'd rather use TavernOS in a browser tab instead of PowerShell, type this into PowerShell (after Step 07 has finished at least once) and press <strong>Enter</strong>:
+  </p>
+  <div class="code">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>python norm.py --web</div>
+  <p class="body sub">
+    A browser tab opens with the same agents, same commands, but a chat-window interface instead of text-in-a-terminal. PowerShell stays open in the background while this runs — close PowerShell and the web page stops working. Pick whichever interface you prefer; you can switch run-to-run.
+  </p>
+
+  <!-- STEP 10 -->
+  <h2 class="section"><span class="step-num">10</span> Using TavernOS next time</h2>
+  <p class="body">
+    Once it's installed, coming back is three commands. Copy them one at a time — each after the previous one finishes.
+  </p>
+  <div class="code">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>cd $HOME\Downloads\tavernos-alpha
+.\.venv\Scripts\Activate.ps1
+python norm.py</div>
+  <p class="body sub">
+    The second command activates the environment we set up in Step 05. The third starts TavernOS. Use <code class="inline">python norm.py --web</code> for the last line if you want the browser version.
+  </p>
+
+  <!-- STEP 11 -->
+  <h2 class="section"><span class="step-num">11</span> If something goes wrong</h2>
+  <p class="body">
+    Most common issues and what to do:
+  </p>
+  <ul class="body">
+    <li><strong>"python is not recognized…"</strong> — Python didn't get added to PATH in Step 02. Reinstall Python from python.org and make sure to tick the "Add python.exe to PATH" checkbox.</li>
+    <li><strong>"Cannot find path… tavernos-alpha"</strong> — the unzipped folder landed somewhere other than Downloads. Email me and include where you actually unzipped it.</li>
+    <li><strong>Red "Execution Policy" error</strong> — Step 05's first line didn't run. Copy just that one line (<code class="inline">Set-ExecutionPolicy…</code>) and paste it into PowerShell by itself, then re-try Step 05.</li>
+    <li><strong>"Invalid API key" or authentication errors</strong> — go back to console.anthropic.com, create a new key, and use that one. Make sure you didn't copy extra spaces.</li>
+    <li><strong>Anything else, or anything that looks scary</strong> — screenshot the PowerShell window and email it to <a href="mailto:contact@TavernOS.ai" style="color: var(--teal); text-decoration: none; border-bottom: 1px solid currentColor;">contact@TavernOS.ai</a>. I'll jump on a call with you.</li>
+  </ul>
+
+  <!-- Reporting back -->
+  <h2 class="section"><span class="step-num">12</span> What to tell me</h2>
+  <p class="body">
+    Three things I care about most, in rough order:
+  </p>
+  <ul class="body">
+    <li>Where did TavernOS say something confidently that was wrong? That's the most important bug.</li>
+    <li>Where did it refuse to help when it should have? Or help when it shouldn't have?</li>
+    <li>Anything that annoyed you enough to make you close the window.</li>
+  </ul>
+  <p class="body">
+    Email, text, voice memo, annotated screenshot — whatever's easiest. I'll schedule a 15-minute check-in at the end of week 1 and a short debrief at the end of week 2.
+  </p>
+
+  <!-- Known rough edges -->
+  <h2 class="section"><span class="step-num">13</span> Known rough edges</h2>
+  <p class="body">Things I already know don't work well; no need to report these:</p>
+  <ul class="body">
+    <li>No multi-user support. This is a single-operator tool right now — you and the machine.</li>
+    <li>No cloud sync. Deliverables live on your computer only. Back up the <code class="inline">.tavernos</code> folder in your user home if it matters to you.</li>
+    <li>Slack integration is teased on the public landing page but not yet real.</li>
+    <li>The AI evaluator occasionally disagrees with humans about quality. You can calibrate it — ask me how on the onboarding call.</li>
+  </ul>
+
+  <div class="foot">
+    <div>TavernOS · Unlisted early-access page</div>
+    <div><a href="mailto:contact@TavernOS.ai">contact@TavernOS.ai</a></div>
+  </div>
+
+</div>
+
+<script>
+function copyCode(btn) {
+  const codeBlock = btn.parentElement;
+  // Get text content but exclude the button's own text
+  const clone = codeBlock.cloneNode(true);
+  const btnInClone = clone.querySelector('.copy-btn');
+  if (btnInClone) btnInClone.remove();
+  const text = clone.textContent.trim();
+
+  navigator.clipboard.writeText(text).then(() => {
+    const original = btn.textContent;
+    btn.textContent = 'Copied';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = original;
+      btn.classList.remove('copied');
+    }, 1400);
+  }).catch(() => {
+    btn.textContent = 'Copy failed';
+    setTimeout(() => { btn.textContent = 'Copy'; }, 1400);
+  });
+}
+</script>
+
+</body>
+</html>
