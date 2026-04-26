@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="TavernOS alpha tester reference guide. Unlisted.">
+<title>TavernOS · alpha tester guide</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --navy:      #0F2236;
+  --teal:      #009688;
+  --teal-soft: #4DB6AC;
+  --paper:     #FAFAF7;
+  --paper-2:   #F2F1EA;
+  --rule:      #D8D5C8;
+  --ink:       #1B1B1B;
+  --dim:       #5A5C63;
+  --code-bg:   #0F2236;
+  --code-ink:  #E8E6DD;
+  --code-teal: #5EEAD4;
+  --code-os:   #8E9BAB;
+  --warn-bg:   #FFF8E1;
+  --warn-rule: #E6C565;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 400;
+  background: var(--paper);
+  color: var(--ink);
+  min-height: 100vh;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(ellipse at top right, rgba(0, 150, 136, 0.035) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.stage {
+  position: relative;
+  z-index: 1;
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 56px 32px 80px;
+}
+
+/* Topbar */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 48px;
+}
+.wordmark {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  font-variation-settings: "opsz" 144, "SOFT" 20;
+  font-size: 24px;
+  letter-spacing: -0.02em;
+  color: var(--navy);
+  text-decoration: none;
+}
+.wordmark .dot {
+  color: var(--teal);
+  font-style: italic;
+  font-variation-settings: "opsz" 144, "SOFT" 80, "WONK" 1;
+}
+.crumb {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--dim);
+  font-weight: 500;
+}
+.crumb a {
+  color: var(--dim);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.crumb a:hover { color: var(--teal); border-color: var(--teal); }
+
+/* Hero */
+.hero { margin-bottom: 52px; }
+.kicker {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 20px;
+}
+.hero h1 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 400;
+  font-variation-settings: "opsz" 144, "SOFT" 30;
+  font-size: clamp(36px, 5vw, 52px);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: var(--navy);
+  margin-bottom: 24px;
+}
+.hero h1 em {
+  font-style: italic;
+  font-variation-settings: "opsz" 144, "SOFT" 70, "WONK" 1;
+  color: var(--teal);
+}
+.hero p {
+  font-size: 17px;
+  color: var(--ink);
+  max-width: 640px;
+  margin-bottom: 14px;
+}
+.hero p.sub { font-size: 15px; color: var(--dim); }
+
+/* Callout */
+.callout {
+  background: var(--warn-bg);
+  border-left: 3px solid var(--warn-rule);
+  padding: 18px 22px;
+  margin: 32px 0 40px;
+  font-size: 14px;
+  color: var(--navy);
+  line-height: 1.55;
+}
+.callout strong {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 4px;
+  letter-spacing: 0.03em;
+}
+.callout.teal {
+  background: #EAF6F5;
+  border-left-color: var(--teal);
+}
+
+/* Section heading */
+h2.section {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  font-variation-settings: "opsz" 144, "SOFT" 20;
+  font-size: 28px;
+  letter-spacing: -0.015em;
+  color: var(--navy);
+  margin: 56px 0 20px;
+  padding-top: 24px;
+  border-top: 1px solid var(--rule);
+}
+
+/* Body prose */
+p.body {
+  font-size: 15px;
+  color: var(--ink);
+  margin: 12px 0 18px;
+  max-width: 680px;
+}
+p.body + p.body { margin-top: -4px; }
+p.body.sub { color: var(--dim); }
+
+/* Body lists */
+ul.body, ol.body {
+  margin: 12px 0 20px 4px;
+  padding-left: 20px;
+  list-style: none;
+}
+ul.body li, ol.body li {
+  font-size: 15px;
+  color: var(--ink);
+  padding: 4px 0;
+  position: relative;
+}
+ul.body li::before {
+  content: '→';
+  position: absolute;
+  left: -20px;
+  color: var(--teal);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  top: 6px;
+}
+ol.body { counter-reset: ol-counter; }
+ol.body li {
+  counter-increment: ol-counter;
+}
+ol.body li::before {
+  content: counter(ol-counter, decimal-leading-zero);
+  position: absolute;
+  left: -28px;
+  color: var(--teal);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  top: 7px;
+  letter-spacing: 0.04em;
+}
+ul.body li code, ol.body li code {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  background: var(--paper-2);
+  padding: 2px 6px;
+  border-radius: 3px;
+  color: var(--navy);
+}
+
+/* Code blocks */
+.code {
+  position: relative;
+  background: var(--code-bg);
+  color: var(--code-ink);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13.5px;
+  line-height: 1.85;
+  padding: 18px 22px;
+  border-radius: 4px;
+  margin: 16px 0 22px;
+  overflow-x: auto;
+  white-space: pre;
+  tab-size: 2;
+}
+.code .os {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  color: var(--code-teal);
+  background: rgba(94, 234, 212, 0.08);
+  border: 1px solid rgba(94, 234, 212, 0.18);
+  padding: 1px 7px;
+  border-radius: 2px;
+  margin-right: 12px;
+  text-transform: uppercase;
+}
+.copy-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--code-ink);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s ease, background 0.2s ease;
+}
+.code:hover .copy-btn { opacity: 1; }
+.copy-btn:hover  { background: rgba(94, 234, 212, 0.15); }
+.copy-btn.copied { background: var(--teal); color: var(--paper); border-color: var(--teal); }
+
+/* Inline code */
+code.inline {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  background: var(--paper-2);
+  padding: 2px 7px;
+  border-radius: 3px;
+  color: var(--navy);
+}
+
+/* Operator placeholder */
+.operator {
+  display: inline-block;
+  background: rgba(230, 197, 101, 0.18);
+  border: 1px dashed rgba(230, 197, 101, 0.6);
+  color: #7a5d12;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  padding: 1px 8px;
+  border-radius: 3px;
+}
+
+/* Inline links in body */
+p.body a, ul.body li a {
+  color: var(--teal);
+  text-decoration: none;
+  border-bottom: 1px solid currentColor;
+}
+
+/* Footer */
+.foot {
+  margin-top: 72px;
+  padding-top: 28px;
+  border-top: 1px solid var(--rule);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 13px;
+  color: var(--dim);
+}
+.foot a {
+  color: var(--teal);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease;
+}
+.foot a:hover { border-color: var(--teal); }
+
+@media (max-width: 560px) {
+  .stage { padding: 40px 22px 64px; }
+  .foot { flex-direction: column; gap: 8px; align-items: flex-start; }
+}
+
+::selection { background: var(--teal); color: var(--paper); }
+</style>
+</head>
+<body>
+
+<div class="stage">
+
+  <div class="topbar">
+    <a href="/" class="wordmark">TavernOS<span class="dot">.</span></a>
+    <div class="crumb"><a href="access.html">Early access</a> · Tester guide</div>
+  </div>
+
+  <div class="hero">
+    <div class="kicker">Reference · alpha</div>
+    <h1>Tester <em>guide.</em></h1>
+    <p class="body">
+      TavernOS is in alpha. This document explains what to test, how the system is laid out, and where to send what you find. Keep it open in another tab while you work — most of it answers a question you'll have once and never need again.
+    </p>
+    <p class="body sub">
+      For first-time setup, see the install page. For a five-minute machine check before your first session, see the <a href="alpha-self-test.html">self-test</a>.
+    </p>
+  </div>
+
+  <h2 class="section">What TavernOS is</h2>
+  <p class="body">
+    TavernOS is a local desktop tool for working with documents and AI agents. You ingest files (Word, PDF, Excel, PowerPoint, plain text, email exports) and talk to specialized agents that can read those files and produce work products — board decks, briefs, summaries.
+  </p>
+  <p class="body">
+    Everything runs on your machine. Ingested files are stored in a local SQLite database, scoped per client. Nothing leaves your computer except the questions you send to the AI.
+  </p>
+
+  <h2 class="section">What you're testing</h2>
+  <p class="body">The alpha covers the core ingest-and-respond loop:</p>
+  <ul class="body">
+    <li>File ingestion via three paths: CLI <code class="inline">/ingest</code>, paperclip button in the web UI, drag-and-drop onto the chat window.</li>
+    <li>Per-client file isolation — keeping work for different clients in separate scopes.</li>
+    <li>A small roster of pre-built agents (Sam routes; Rebecca builds decks; others domain-specific).</li>
+    <li>The alpha demo workflow: ingest a real document, ask an agent to do something with it.</li>
+  </ul>
+  <p class="body">What's not in scope is in <em>Known limits</em> at the bottom.</p>
+
+  <h2 class="section">Setup</h2>
+  <p class="body">
+    Windows is the primary alpha target. macOS is supported but less tested — if you're on Mac, expect to be the one finding the platform-specific bugs.
+  </p>
+  <p class="body sub">
+    The full install walkthrough lives on the <a href="access.html">early-access page</a>. The notes below are reference material for once you're already running.
+  </p>
+
+  <p class="body" style="margin-top: 28px;"><strong>Verify the install</strong> — open a terminal and run:</p>
+  <div class="code">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="os">WIN</span>norm
+<span class="os">MAC</span>norm</div>
+  <p class="body">
+    You should reach a <code class="inline">&gt;</code> prompt. Type <code class="inline">/help</code> to confirm commands are available, then exit with Ctrl-C (Windows) or Cmd-C / Ctrl-C (macOS).
+  </p>
+
+  <p class="body"><strong>Terminal app:</strong> on Windows use PowerShell. On macOS use Terminal.app (built in) or iTerm2 if you have it. Either is fine.</p>
+
+  <p class="body" style="margin-top: 24px;"><strong>First launch (web UI)</strong> — in the same terminal:</p>
+  <div class="code">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>norm --web</div>
+  <p class="body">
+    The terminal will print a URL — open it in your browser. <span class="operator">[OPERATOR: confirm default port if not 8000]</span>
+  </p>
+  <p class="body">
+    You should see the chat interface: an agent dropdown at the top, a message area in the middle, an input row at the bottom, and a right-rail panel labeled <strong>Files</strong>.
+  </p>
+
+  <h2 class="section">First five minutes</h2>
+  <p class="body">
+    Once installed, walk through this to confirm everything works end-to-end. The longer version is on the <a href="alpha-self-test.html">self-test</a> page.
+  </p>
+  <ol class="body">
+    <li>Launch <code class="inline">norm --web</code>. Open the browser to the URL it prints.</li>
+    <li>Drag a Word document onto the chat window from your file manager (File Explorer on Windows, Finder on macOS). You should see a teal "Drop file to ingest" overlay, then a confirmation bubble after you drop.</li>
+    <li>The file appears in the right-rail Files panel.</li>
+    <li>From the agent dropdown, pick <strong>Rebecca-Deck</strong>.</li>
+    <li>Send: <code class="inline">build me a board deck for Q1 using the file I just uploaded</code>.</li>
+    <li>Rebecca should reference your file's actual content. If she asks for source data without acknowledging your upload, something is wrong — see the self-test page's troubleshooting section.</li>
+  </ol>
+
+  <h2 class="section">Bringing files in</h2>
+  <p class="body">
+    Three ways to ingest a file. All three share the same backend, so they should behave identically — if one breaks, the others probably will too.
+  </p>
+  <ol class="body">
+    <li><strong>CLI <code class="inline">/ingest</code></strong> — in <code class="inline">norm</code>, run <code class="inline">/ingest &lt;path&gt;</code>. Useful for scripted ingestion or if you live in the terminal.</li>
+    <li><strong>Paperclip button</strong> — in the web UI, click the 📎 icon in the input row. File picker opens.</li>
+    <li><strong>Drag-and-drop</strong> — drag a file from your file manager onto the chat window. The teal overlay confirms the drop target.</li>
+  </ol>
+  <p class="body">
+    Test all three at least once during your alpha session. They exercise different code paths in the browser even though they end at the same backend.
+  </p>
+
+  <p class="body"><strong>Path examples by OS:</strong></p>
+  <div class="code">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="os">WIN</span>/ingest C:\Users\you\Downloads\report.docx
+<span class="os">MAC</span>/ingest ~/Downloads/report.docx
+<span class="os">MAC</span>/ingest /Users/you/Downloads/report.docx</div>
+  <p class="body sub">
+    Both forms work on macOS. Tilde (<code class="inline">~</code>) is convenient; absolute paths are explicit. Pick whichever you prefer. On Windows, use the absolute path with backslashes; quote it if it contains spaces.
+  </p>
+
+  <p class="body" style="margin-top: 22px;">
+    Supported formats: <code class="inline">.txt</code>, <code class="inline">.md</code>, <code class="inline">.pdf</code>, <code class="inline">.docx</code>, <code class="inline">.xlsx</code>, <code class="inline">.pptx</code>, <code class="inline">.msg</code>, <code class="inline">.eml</code>. Anything else fails with a clean error message rather than crashing.
+  </p>
+
+  <h2 class="section">Per-client model</h2>
+  <p class="body">
+    TavernOS scopes ingested files by <strong>client</strong>. The default client is <code class="inline">_self</code> — your own work. To create or switch clients:
+  </p>
+  <div class="code">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>/client switch &lt;name&gt;</div>
+  <p class="body">
+    A name you've never used before auto-creates a new client. Files ingested under one client are <strong>not</strong> visible from another. Switching back returns you to that client's files.
+  </p>
+  <p class="body sub">
+    This matters for alpha testing: if you ingest a file under one client and don't see it later, check which client is active before reporting a bug. The current client name is shown <span class="operator">[OPERATOR: where in the UI does the active client display? top bar / status line / etc.]</span>.
+  </p>
+
+  <h2 class="section">Reporting what you find</h2>
+  <p class="body">Email everything to <a href="mailto:support@tavernos.ai">support@tavernos.ai</a>.</p>
+  <p class="body">A useful bug report has:</p>
+  <ul class="body">
+    <li><strong>What you did</strong> — exact sequence of clicks/types. "I dragged a docx onto the window" is good; "the upload broke" is not.</li>
+    <li><strong>What you expected</strong> — the documented behavior, if relevant.</li>
+    <li><strong>What actually happened</strong> — copy the error text or describe the UI state.</li>
+    <li><strong>Files involved</strong> — if you can share the file that triggered the bug, attach it. If not, describe its shape (size, format, source — was it exported from Word, Google Docs, somewhere else?).</li>
+    <li><strong>Environment</strong> — OS and version (Windows 11 / macOS 14.x / etc.), browser name and version, anything unusual.</li>
+  </ul>
+  <p class="body">
+    Browser dev tools output is gold. If something fails in the web UI, opening the <strong>Console</strong> and <strong>Network</strong> tabs and capturing what you see there is more useful than a screenshot of the chat.
+  </p>
+
+  <h2 class="section">Known limits</h2>
+  <p class="body">
+    These are intentional gaps for the alpha — please don't report them as bugs:
+  </p>
+  <ul class="body">
+    <li><strong>Local desktop only.</strong> Windows is the primary target; macOS is supported but less tested. Linux works for development but isn't an official alpha target.</li>
+    <li><strong>Single-user.</strong> No multi-user, no cloud, no remote access.</li>
+    <li><strong>No SharePoint integration.</strong> File references are local paths. SharePoint forward-compat is in scope for a later release.</li>
+    <li><strong>No automated test suite.</strong> Internal verification is a manual checklist. If you hit something the checklist doesn't cover, that's exactly the kind of finding the alpha is for.</li>
+    <li><strong>Agent roster is fixed.</strong> Custom agents aren't user-creatable yet.</li>
+    <li><strong>No conversation export.</strong> What you say in the chat lives in the chat. Copy-paste is your friend.</li>
+  </ul>
+
+  <div class="foot">
+    <div>TavernOS · Alpha tester guide</div>
+    <div><a href="mailto:support@tavernos.ai">support@tavernos.ai</a></div>
+  </div>
+
+</div>
+
+<script>
+function copyCode(btn) {
+  const codeBlock = btn.parentElement;
+  const clone = codeBlock.cloneNode(true);
+  const btnInClone = clone.querySelector('.copy-btn');
+  if (btnInClone) btnInClone.remove();
+  const text = clone.textContent.trim();
+  navigator.clipboard.writeText(text).then(() => {
+    const original = btn.textContent;
+    btn.textContent = 'Copied';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = original;
+      btn.classList.remove('copied');
+    }, 1400);
+  }).catch(() => {
+    btn.textContent = 'Copy failed';
+    setTimeout(() => { btn.textContent = 'Copy'; }, 1400);
+  });
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="TavernOS alpha self-test. Five-minute install verification. Unlisted.">
+<title>TavernOS · alpha self-test</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --navy:      #0F2236;
+  --teal:      #009688;
+  --teal-soft: #4DB6AC;
+  --paper:     #FAFAF7;
+  --paper-2:   #F2F1EA;
+  --rule:      #D8D5C8;
+  --ink:       #1B1B1B;
+  --dim:       #5A5C63;
+  --code-bg:   #0F2236;
+  --code-ink:  #E8E6DD;
+  --code-teal: #5EEAD4;
+  --warn-bg:   #FFF8E1;
+  --warn-rule: #E6C565;
+  --ok-bg:     #EAF6F1;
+  --ok-rule:   #5EAA8C;
+  --fail-bg:   #FBEEEC;
+  --fail-rule: #D88A7E;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 400;
+  background: var(--paper);
+  color: var(--ink);
+  min-height: 100vh;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(ellipse at top right, rgba(0, 150, 136, 0.035) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.stage {
+  position: relative;
+  z-index: 1;
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 56px 32px 80px;
+}
+
+/* Topbar */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 48px;
+}
+.wordmark {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  font-variation-settings: "opsz" 144, "SOFT" 20;
+  font-size: 24px;
+  letter-spacing: -0.02em;
+  color: var(--navy);
+  text-decoration: none;
+}
+.wordmark .dot {
+  color: var(--teal);
+  font-style: italic;
+  font-variation-settings: "opsz" 144, "SOFT" 80, "WONK" 1;
+}
+.crumb {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--dim);
+  font-weight: 500;
+}
+.crumb a {
+  color: var(--dim);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.crumb a:hover { color: var(--teal); border-color: var(--teal); }
+
+/* Hero */
+.hero { margin-bottom: 52px; }
+.kicker {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 20px;
+}
+.hero h1 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 400;
+  font-variation-settings: "opsz" 144, "SOFT" 30;
+  font-size: clamp(36px, 5vw, 52px);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: var(--navy);
+  margin-bottom: 24px;
+}
+.hero h1 em {
+  font-style: italic;
+  font-variation-settings: "opsz" 144, "SOFT" 70, "WONK" 1;
+  color: var(--teal);
+}
+.hero p {
+  font-size: 17px;
+  color: var(--ink);
+  max-width: 640px;
+  margin-bottom: 14px;
+}
+.hero p.sub { font-size: 15px; color: var(--dim); }
+
+/* Callouts */
+.callout {
+  background: var(--warn-bg);
+  border-left: 3px solid var(--warn-rule);
+  padding: 18px 22px;
+  margin: 32px 0 40px;
+  font-size: 14px;
+  color: var(--navy);
+  line-height: 1.55;
+}
+.callout strong {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 4px;
+  letter-spacing: 0.03em;
+}
+.callout.ok {
+  background: var(--ok-bg);
+  border-left-color: var(--ok-rule);
+}
+.callout.fail {
+  background: var(--fail-bg);
+  border-left-color: var(--fail-rule);
+}
+
+/* Section heading (with step-num for sequential checks) */
+h2.section {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  font-variation-settings: "opsz" 144, "SOFT" 20;
+  font-size: 28px;
+  letter-spacing: -0.015em;
+  color: var(--navy);
+  margin: 56px 0 20px;
+  padding-top: 24px;
+  border-top: 1px solid var(--rule);
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+}
+h2.section .step-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--teal);
+  letter-spacing: 0.05em;
+}
+
+/* Body prose */
+p.body {
+  font-size: 15px;
+  color: var(--ink);
+  margin: 12px 0 18px;
+  max-width: 680px;
+}
+p.body + p.body { margin-top: -4px; }
+p.body.sub { color: var(--dim); }
+
+/* Lists */
+ul.body, ol.body {
+  margin: 12px 0 20px 4px;
+  padding-left: 20px;
+  list-style: none;
+}
+ul.body li, ol.body li {
+  font-size: 15px;
+  color: var(--ink);
+  padding: 4px 0;
+  position: relative;
+}
+ul.body li::before {
+  content: '→';
+  position: absolute;
+  left: -20px;
+  color: var(--teal);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  top: 6px;
+}
+ol.body { counter-reset: ol-counter; }
+ol.body li { counter-increment: ol-counter; }
+ol.body li::before {
+  content: counter(ol-counter, decimal-leading-zero);
+  position: absolute;
+  left: -28px;
+  color: var(--teal);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  top: 7px;
+  letter-spacing: 0.04em;
+}
+ul.body li code, ol.body li code {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  background: var(--paper-2);
+  padding: 2px 6px;
+  border-radius: 3px;
+  color: var(--navy);
+}
+
+/* Code blocks */
+.code {
+  position: relative;
+  background: var(--code-bg);
+  color: var(--code-ink);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13.5px;
+  line-height: 1.85;
+  padding: 18px 22px;
+  border-radius: 4px;
+  margin: 16px 0 22px;
+  overflow-x: auto;
+  white-space: pre;
+  tab-size: 2;
+}
+.code .os {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  color: var(--code-teal);
+  background: rgba(94, 234, 212, 0.08);
+  border: 1px solid rgba(94, 234, 212, 0.18);
+  padding: 1px 7px;
+  border-radius: 2px;
+  margin-right: 12px;
+  text-transform: uppercase;
+}
+.copy-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--code-ink);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s ease, background 0.2s ease;
+}
+.code:hover .copy-btn { opacity: 1; }
+.copy-btn:hover  { background: rgba(94, 234, 212, 0.15); }
+.copy-btn.copied { background: var(--teal); color: var(--paper); border-color: var(--teal); }
+
+/* Inline code */
+code.inline {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  background: var(--paper-2);
+  padding: 2px 7px;
+  border-radius: 3px;
+  color: var(--navy);
+}
+
+/* Operator placeholder */
+.operator {
+  display: inline-block;
+  background: rgba(230, 197, 101, 0.18);
+  border: 1px dashed rgba(230, 197, 101, 0.6);
+  color: #7a5d12;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  padding: 1px 8px;
+  border-radius: 3px;
+}
+
+/* Expected-result block — the green "this is what should happen" panel */
+.expected {
+  background: var(--ok-bg);
+  border-left: 3px solid var(--ok-rule);
+  padding: 14px 20px 14px 22px;
+  margin: 14px 0 18px;
+  font-size: 14.5px;
+  color: var(--navy);
+  line-height: 1.6;
+  border-radius: 0 3px 3px 0;
+}
+.expected::before {
+  content: 'EXPECTED · ';
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--ok-rule);
+  letter-spacing: 0.12em;
+  font-weight: 500;
+  margin-right: 6px;
+}
+
+/* "Mark pass/fail" sub-line */
+.mark-line {
+  font-size: 13.5px;
+  color: var(--dim);
+  font-style: italic;
+  margin: 4px 0 22px;
+}
+
+/* Inline links in body */
+p.body a, ul.body li a {
+  color: var(--teal);
+  text-decoration: none;
+  border-bottom: 1px solid currentColor;
+}
+
+/* Footer */
+.foot {
+  margin-top: 72px;
+  padding-top: 28px;
+  border-top: 1px solid var(--rule);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 13px;
+  color: var(--dim);
+}
+.foot a {
+  color: var(--teal);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease;
+}
+.foot a:hover { border-color: var(--teal); }
+
+@media (max-width: 560px) {
+  .stage { padding: 40px 22px 64px; }
+  .foot { flex-direction: column; gap: 8px; align-items: flex-start; }
+}
+
+::selection { background: var(--teal); color: var(--paper); }
+</style>
+</head>
+<body>
+
+<div class="stage">
+
+  <div class="topbar">
+    <a href="/" class="wordmark">TavernOS<span class="dot">.</span></a>
+    <div class="crumb"><a href="access.html">Early access</a> · Self-test</div>
+  </div>
+
+  <div class="hero">
+    <div class="kicker">Reference · alpha</div>
+    <h1>Five-minute <em>self-test.</em></h1>
+    <p class="body">
+      Run this before you start real testing. It confirms your install works on your machine. Five short checks, about a minute each. If anything fails, the troubleshooting section tells you what's likely wrong.
+    </p>
+    <p class="body sub">
+      Total time: ~5 minutes if everything passes. For broader reference material, see the <a href="alpha-guide.html">tester guide</a>.
+    </p>
+  </div>
+
+  <h2 class="section">Before you start</h2>
+  <p class="body">You need:</p>
+  <ul class="body">
+    <li>A working <code class="inline">norm</code> install. See the <a href="access.html">early-access page</a> if you haven't installed yet.</li>
+    <li>One Word document (<code class="inline">.docx</code>) you don't mind ingesting. Any docx will do — a real document is better than a blank one. If you don't have one handy, save any Word doc to your Downloads folder.</li>
+    <li>A terminal window for running CLI commands (PowerShell on Windows, Terminal.app on macOS).</li>
+    <li>A browser for the web UI.</li>
+  </ul>
+
+  <p class="body sub" style="margin-top: 20px;">
+    Run the five checks in order. If a check fails, stop and consult <em>Troubleshooting</em> at the bottom before continuing — later checks may fail for the same reason and aren't worth running until the first one is sorted.
+  </p>
+
+  <!-- CHECK 1 -->
+  <h2 class="section"><span class="step-num">01</span> CLI ingest</h2>
+  <p class="body">In a terminal:</p>
+  <ol class="body">
+    <li>Run <code class="inline">norm</code>.</li>
+    <li>At the <code class="inline">&gt;</code> prompt, run <code class="inline">/ingest &lt;full path to your docx&gt;</code>. Examples:</li>
+  </ol>
+  <div class="code">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="os">WIN</span>/ingest C:\Users\you\Downloads\test.docx
+<span class="os">MAC</span>/ingest ~/Downloads/test.docx</div>
+
+  <div class="expected">
+    A bordered <strong>WORD INDEXED</strong> card appears, listing paragraph count, table count, word count, and a structure tree. No red error text or Python traceback.
+  </div>
+
+  <p class="mark-line">Mark <strong>PASS</strong> or <strong>FAIL</strong>. If FAIL, see Troubleshooting → CLI failures.</p>
+
+  <!-- CHECK 2 -->
+  <h2 class="section"><span class="step-num">02</span> Web /ingest</h2>
+  <p class="body">
+    Exit the CLI (Ctrl-C on Windows, Cmd-C or Ctrl-C on macOS). In a fresh terminal window, run:
+  </p>
+  <div class="code">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>norm --web</div>
+  <p class="body">Open your browser to the URL it prints.</p>
+  <ol class="body">
+    <li>In the chat input at the bottom of the page, type <code class="inline">/ingest &lt;full path to your docx&gt;</code> and press Enter.</li>
+  </ol>
+
+  <div class="expected">
+    A "Tavern" message bubble appears with an <code class="inline">**Ingested:**</code> summary, including file type, word count, and a preview of the content. The file should also appear in the right-rail Files panel.
+  </div>
+
+  <p class="mark-line">Mark <strong>PASS</strong> or <strong>FAIL</strong>. If FAIL, see Troubleshooting → Web ingest failures.</p>
+
+  <!-- CHECK 3 -->
+  <h2 class="section"><span class="step-num">03</span> Paperclip upload</h2>
+  <p class="body">In the same browser tab:</p>
+  <ol class="body">
+    <li>Click the 📎 icon in the chat input row.</li>
+    <li>In the file picker, select the same docx you just used.</li>
+  </ol>
+
+  <div class="expected">
+    A Tavern bubble appears matching the shape of Check 02. The file should <strong>not</strong> appear twice in the Files panel — it's the same file.
+  </div>
+
+  <p class="mark-line">Mark <strong>PASS</strong> or <strong>FAIL</strong>. If FAIL, see Troubleshooting → Web ingest failures.</p>
+
+  <!-- CHECK 4 -->
+  <h2 class="section"><span class="step-num">04</span> Drag-and-drop</h2>
+  <ol class="body">
+    <li>From your file manager (File Explorer on Windows, Finder on macOS), drag the same docx onto the chat window.</li>
+  </ol>
+
+  <div class="expected">
+    As you drag onto the window, a teal-bordered overlay fades in saying "Drop file to ingest." Releasing your mouse closes the overlay and produces another Tavern bubble.
+  </div>
+
+  <p class="mark-line">Mark <strong>PASS</strong> or <strong>FAIL</strong>. If FAIL, see Troubleshooting → Web ingest failures.</p>
+
+  <!-- CHECK 5 -->
+  <h2 class="section"><span class="step-num">05</span> Ask Rebecca</h2>
+  <p class="body">This confirms the agent layer works, not just ingestion.</p>
+  <ol class="body">
+    <li>From the agent dropdown at the top of the chat, select <strong>Rebecca-Deck</strong>.</li>
+    <li>Send: <code class="inline">build me a board deck for Q1</code></li>
+  </ol>
+
+  <div class="expected">
+    A plan card appears (from Sam, the router). Then Rebecca's reply streams in. Her reply should ask for source data or reference your uploaded file, mention deck structure (executive summary, KPIs, etc.), and explicitly refuse to fabricate numbers if you haven't given her any.
+  </div>
+
+  <div class="callout fail">
+    <strong>Failure signal.</strong>
+    If Rebecca produces a deck full of <code class="inline">TBD</code> placeholders without asking — or fabricates numbers without sourcing them — something is wrong with skill loading.
+  </div>
+
+  <p class="mark-line">Mark <strong>PASS</strong> or <strong>FAIL</strong>. If FAIL, see Troubleshooting → Agent failures.</p>
+
+  <!-- TROUBLESHOOTING -->
+  <h2 class="section">Troubleshooting</h2>
+
+  <p class="body" style="margin-top: 8px;"><strong>CLI failures</strong></p>
+  <ul class="body">
+    <li><code class="inline">python-docx not installed</code> (or any <code class="inline">ModuleNotFoundError</code>). Install issue, not a TavernOS bug. <span class="operator">[OPERATOR: insert install-fix command — likely <code class="inline">pip install python-docx</code> or pointer to <code class="inline">requirements.txt</code>]</span> and try again.</li>
+    <li>Traceback ending in <code class="inline">AttributeError: 'NoneType' object has no attribute ...</code>. Known regression class. Email the full traceback to <a href="mailto:support@tavernos.ai">support@tavernos.ai</a>.</li>
+    <li><code class="inline">No such file or directory</code>. Your path is wrong. Use the full absolute path. If it contains spaces, wrap it in quotes:</li>
+  </ul>
+  <div class="code">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="os">WIN</span>/ingest "C:\Users\you\My Folder\file.docx"
+<span class="os">MAC</span>/ingest "~/My Folder/file.docx"</div>
+
+  <p class="body" style="margin-top: 24px;"><strong>Web ingest failures</strong></p>
+  <ul class="body">
+    <li><strong>HTTP 500 in the browser console.</strong> Server-side error. Switch to the terminal window where <code class="inline">norm --web</code> is running and copy the actual error text from there. Email it to <a href="mailto:support@tavernos.ai">support@tavernos.ai</a>.</li>
+    <li><strong>Drop overlay doesn't appear during drag.</strong> Browser-specific. Try a hard-refresh:</li>
+  </ul>
+  <div class="code">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="os">WIN</span>Ctrl-Shift-R
+<span class="os">MAC</span>Cmd-Shift-R</div>
+  <p class="body sub">If still broken, note your browser name and version when emailing support.</p>
+  <ul class="body">
+    <li><strong><code class="inline">/tmp</code> path appears in any error message on Windows.</strong> Known historical bug, should be fixed in current builds. If you see it, you may be running an older build — email support with the version you're on.</li>
+  </ul>
+
+  <p class="body" style="margin-top: 24px;"><strong>Agent failures</strong></p>
+  <ul class="body">
+    <li><strong>Generic deck output with TBD placeholders and no questions.</strong> Skill loader isn't reaching Rebecca. Email support, mention "Rebecca skill_bodies" in the subject.</li>
+    <li><strong>Crash, blank reply, or stream stops mid-response.</strong> Check the terminal window for a traceback and email it.</li>
+    <li><strong>Wrong agent responds.</strong> Sam routed to the wrong skill. Note what you sent and what agent answered, email support.</li>
+  </ul>
+
+  <p class="body" style="margin-top: 24px;"><strong>Anything else</strong></p>
+  <p class="body">
+    If the symptom doesn't match the above, email <a href="mailto:support@tavernos.ai">support@tavernos.ai</a> with what you tried, what you expected, and what you saw. Don't worry about whether it's "really a bug" — surfacing the symptom is the alpha's job.
+  </p>
+
+  <h2 class="section">All five passed?</h2>
+  <div class="callout ok">
+    <strong>You're set.</strong>
+    Continue with the rest of the alpha — see the <a href="alpha-guide.html" style="color: var(--teal);">tester guide</a> for what to test next.
+  </div>
+  <p class="body">
+    If you hit something during the five checks but everything eventually passed (e.g., a refresh fixed it), email support anyway. Intermittent bugs are the most valuable to surface early.
+  </p>
+
+  <div class="foot">
+    <div>TavernOS · Alpha self-test</div>
+    <div><a href="mailto:support@tavernos.ai">support@tavernos.ai</a></div>
+  </div>
+
+</div>
+
+<script>
+function copyCode(btn) {
+  const codeBlock = btn.parentElement;
+  const clone = codeBlock.cloneNode(true);
+  const btnInClone = clone.querySelector('.copy-btn');
+  if (btnInClone) btnInClone.remove();
+  const text = clone.textContent.trim();
+  navigator.clipboard.writeText(text).then(() => {
+    const original = btn.textContent;
+    btn.textContent = 'Copied';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = original;
+      btn.classList.remove('copied');
+    }, 1400);
+  }).catch(() => {
+    btn.textContent = 'Copy failed';
+    setTimeout(() => { btn.textContent = 'Copy'; }, 1400);
+  });
+}
+</script>
+
+</body>
+</html>

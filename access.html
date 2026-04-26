@@ -372,6 +372,68 @@ code.inline {
   .prereqs dt:first-child { padding-top: 0; }
 }
 
+/* Reference docs grid (inserted between Mac callout and Step 01) */
+.ref-section { margin: 0 0 40px; }
+.ref-intro {
+  font-size: 14.5px;
+  color: var(--ink);
+  margin: 0 0 14px;
+  max-width: 680px;
+}
+.ref-intro strong {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  font-variation-settings: "opsz" 72, "SOFT" 30;
+  font-size: 17px;
+  color: var(--navy);
+  margin-right: 6px;
+  letter-spacing: -0.01em;
+}
+.ref-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.ref-card {
+  display: block;
+  background: var(--paper-2);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 22px 24px;
+  text-decoration: none;
+  color: var(--ink);
+  transition: border-color 0.2s ease, transform 0.2s cubic-bezier(0.2, 0.9, 0.3, 1);
+}
+.ref-card:hover {
+  border-color: var(--teal);
+  transform: translateY(-2px);
+}
+.ref-card-meta {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  color: var(--dim);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+.ref-card-title {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  font-variation-settings: "opsz" 72, "SOFT" 30;
+  font-size: 19px;
+  color: var(--navy);
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+.ref-card-desc {
+  font-size: 13.5px;
+  color: var(--dim);
+  line-height: 1.55;
+}
+@media (max-width: 560px) {
+  .ref-grid { grid-template-columns: 1fr; }
+}
+
 /* Footer */
 .foot {
   margin-top: 72px;
@@ -432,6 +494,25 @@ code.inline {
   <div class="callout" style="background: #EAF6F5; border-left-color: var(--teal);">
     <strong>On a Mac?</strong>
     The install is similar but a few commands differ. Rather than have you guess, email <a href="mailto:contact@TavernOS.ai" style="color: var(--teal);">contact@TavernOS.ai</a> and I'll walk you through it on a 15-minute call. The instructions below are written for Windows 10 or 11.
+  </div>
+
+  <!-- REFERENCE DOCS -->
+  <div class="ref-section">
+    <p class="ref-intro">
+      <strong>Reference docs.</strong> Two short pages you'll want open while you go through the alpha. Bookmark them or save offline.
+    </p>
+    <div class="ref-grid">
+      <a class="ref-card" href="alpha-guide.html">
+        <div class="ref-card-meta">Doc · Guide</div>
+        <div class="ref-card-title">Alpha tester guide</div>
+        <div class="ref-card-desc">What you're testing, the per-client model, where to send bug reports.</div>
+      </a>
+      <a class="ref-card" href="alpha-self-test.html">
+        <div class="ref-card-meta">Doc · Checklist</div>
+        <div class="ref-card-title">Five-minute self-test</div>
+        <div class="ref-card-desc">Run before your first session — confirms ingest, upload, and agent flows work on your machine.</div>
+      </a>
+    </div>
   </div>
 
   <!-- STEP 1 -->
