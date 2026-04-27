@@ -1,7 +1,7 @@
 # Cloudflare Pages routing.
 # "/ /wip 200" means: when a visitor hits the root URL, serve wip.html content
 # but keep the URL bar at "/". Status 200 is a REWRITE (not a 301/302 redirect),
-# so the visitor sees tavernos.ai in their address bar — not tavernos.ai/wip.
+# so the visitor sees tavernos.ai in their address bar ??? not tavernos.ai/wip.
 #
 # When you're ready to build the real homepage:
 #   1. Create a new index.html with the real site content
@@ -9,4 +9,3 @@
 #   3. Redeploy. Cloudflare will serve the new index.html at "/" by default.
 #   4. Keep wip.html around as an archive at tavernos.ai/wip, or delete it.
 
-/  /wip  200
