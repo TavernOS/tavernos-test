@@ -3,1793 +3,479 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Norm · TavernOS</title>
+<meta name="description" content="TavernOS — an AI workstation that does the work, not just talks about it. Ten specialists installed on your laptop. Real deliverables, not chat transcripts.">
+<title>TavernOS</title>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
 <style>
 :root {
-  --teal:    #00d4c8;
-  --teal2:   #00a89e;
-  --teal3:   #007972;
-  --navy:    #060f1a;
-  --navy2:   #0b1929;
-  --navy3:   #0f2236;
-  --navy4:   #162d47;
-  --white:   #f0f6ff;
-  --gray:    #7a9ab5;
-  --gray2:   #4a6a85;
-  --gray3:   #2b435a;
-  --amber:   #fbbf24;
-  --green:   #34d399;
-  --red:     #f87171;
-  /* Monospace stack — used throughout. DM Mono from Google Fonts, with
-     Consolas for Windows and Courier New as the universal fallback.
-     (Earlier versions used 'Segoe UI Symbol' here, copy-pasted from the
-     sans stack — that's a symbol font, not monospace, so it was wrong.) */
-  --font-mono: 'DM Mono', Consolas, 'Courier New', monospace;
+  --navy:      #0F2236;
+  --teal:      #009688;
+  --teal-soft: #4DB6AC;
+  --paper:     #FAFAF7;
+  --paper-2:   #F2F1EA;
+  --rule:      #D8D5C8;
+  --ink:       #1B1B1B;
+  --dim:       #5A5C63;
 }
+
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; overflow: hidden; }
+
+html { scroll-behavior: smooth; }
+
 body {
-  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Segoe UI Symbol', 'Segoe UI Emoji', sans-serif;
-  background: var(--navy);
-  color: var(--white);
-  font-size: 14px;
-  line-height: 1.55;
+  font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 400;
+  background: var(--paper);
+  color: var(--ink);
+  min-height: 100vh;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Layout */
-.app { display: grid; grid-template-columns: 260px 1fr; height: 100vh; }
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(ellipse at top right, rgba(0, 150, 136, 0.035) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
 
-/* Sidebar */
-.sidebar {
-  background: var(--navy2);
-  border-right: 1px solid var(--navy4);
-  display: flex; flex-direction: column;
-  overflow-y: auto;
+.stage {
+  position: relative;
+  z-index: 1;
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 56px 32px 80px;
 }
-.sidebar-header {
-  padding: 20px 20px 14px;
-  border-bottom: 1px solid var(--navy4);
+
+/* Topbar */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 48px;
 }
-.brand {
-  font-family: var(--font-mono);
-  font-size: 18px; font-weight: 500;
-  color: var(--teal); letter-spacing: -0.02em;
+
+.wordmark {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  font-variation-settings: "opsz" 144, "SOFT" 20;
+  font-size: 24px;
+  letter-spacing: -0.02em;
+  color: var(--navy);
+  text-decoration: none;
 }
-.brand-sub {
-  font-size: 11px;
-  color: var(--gray2);
-  font-family: var(--font-mono);
-  margin-top: 2px;
+
+.wordmark .dot {
+  color: var(--teal);
+  font-style: italic;
+  font-variation-settings: "opsz" 144, "SOFT" 80, "WONK" 1;
+}
+
+.crumb {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--dim);
+  font-weight: 500;
+}
+
+/* Hero */
+.hero {
+  margin-bottom: 60px;
+}
+
+.kicker {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 20px;
+}
+
+.hero h1 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 400;
+  font-variation-settings: "opsz" 144, "SOFT" 30;
+  font-size: clamp(36px, 5vw, 52px);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: var(--navy);
+  margin-bottom: 24px;
+}
+
+.hero h1 em {
+  font-style: italic;
+  font-variation-settings: "opsz" 144, "SOFT" 70, "WONK" 1;
+  color: var(--teal);
+}
+
+.hero p {
+  font-size: 17px;
+  color: var(--ink);
+  max-width: 640px;
+  margin-bottom: 14px;
+}
+
+.hero p.sub {
+  font-size: 15px;
+  color: var(--dim);
+}
+
+/* Section heading */
+h2.section {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  font-variation-settings: "opsz" 144, "SOFT" 20;
+  font-size: 28px;
+  letter-spacing: -0.015em;
+  color: var(--navy);
+  margin: 56px 0 20px;
+  padding-top: 24px;
+  border-top: 1px solid var(--rule);
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+}
+
+h2.section .step-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--teal);
   letter-spacing: 0.05em;
 }
-.sidebar-section {
-  padding: 16px 20px;
-  border-bottom: 1px solid var(--navy4);
+
+/* Body prose */
+p.body {
+  font-size: 15px;
+  color: var(--ink);
+  margin: 12px 0 18px;
+  max-width: 680px;
 }
-.sidebar-label {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--gray2);
+
+p.body + p.body {
+  margin-top: -4px;
+}
+
+p.body.sub {
+  font-size: 14px;
+  color: var(--dim);
+}
+
+ul.body {
+  margin: 12px 0 20px 4px;
+  padding-left: 20px;
+  list-style: none;
+}
+
+ul.body li {
+  font-size: 15px;
+  color: var(--ink);
+  padding: 4px 0;
+  position: relative;
+}
+
+ul.body li::before {
+  content: '→';
+  position: absolute;
+  left: -20px;
+  color: var(--teal);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  top: 6px;
+}
+
+ul.body li strong {
+  font-weight: 600;
+  color: var(--navy);
+}
+
+/* Crew grid — pairs of name + role */
+.crew {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 28px;
+  margin: 18px 0 8px;
+  padding: 22px 24px;
+  background: var(--paper-2);
+  border-radius: 4px;
+}
+.crew-row {
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  gap: 12px;
+  align-items: baseline;
+}
+.crew-name {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  color: var(--teal);
+  letter-spacing: 0.04em;
+  font-weight: 500;
+}
+.crew-role {
+  font-size: 14px;
+  color: var(--ink);
+  line-height: 1.5;
+}
+@media (max-width: 560px) {
+  .crew { grid-template-columns: 1fr; padding: 18px 20px; gap: 10px; }
+}
+
+/* Practice example callout */
+.practice {
+  background: var(--paper-2);
+  border-left: 3px solid var(--teal-soft);
+  padding: 20px 24px;
+  margin: 18px 0 22px;
+  border-radius: 0 4px 4px 0;
+}
+.practice-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  color: var(--teal);
   margin-bottom: 10px;
 }
-.status-line {
-  display: flex; justify-content: space-between;
-  font-size: 12px; padding: 3px 0;
+.practice p {
+  font-size: 15px;
+  color: var(--ink);
+  line-height: 1.6;
+  margin-bottom: 10px;
+  max-width: 660px;
 }
-.status-line .k { color: var(--gray); }
-.status-line .v { color: var(--white); font-family: var(--font-mono); }
-.status-line .v.teal { color: var(--teal); }
-.status-line .v.amber { color: var(--amber); }
-.agent-item {
-  padding: 8px 10px; margin: 2px -10px;
-  border-radius: 4px; cursor: pointer;
-  display: flex; align-items: center; gap: 10px;
-  font-size: 13px;
-  transition: background 0.12s;
-}
-.agent-item:hover { background: var(--navy3); }
-.agent-item.active { background: var(--navy3); color: var(--teal); }
-.agent-item .dot {
-  width: 6px; height: 6px; border-radius: 50%;
-  background: var(--teal3); flex-shrink: 0;
-}
-.agent-item.active .dot { background: var(--teal); box-shadow: 0 0 8px var(--teal); }
-.agent-name { font-weight: 500; }
-.file-item {
-  padding: 7px 0; font-size: 12px;
-  color: var(--gray); border-bottom: 1px solid var(--navy3);
-  display: flex; gap: 8px; align-items: center;
-}
-.file-item:last-child { border: none; }
-.file-item .icon { font-size: 14px; }
-
-/* Main chat area */
-.main { display: flex; flex-direction: column; min-width: 0; min-height: 0; overflow: hidden; }
-.main-header {
-  padding: 14px 24px;
-  border-bottom: 1px solid var(--navy4);
-  display: flex; justify-content: space-between; align-items: center;
-  background: var(--navy2);
-}
-.main-header-title {
-  font-family: var(--font-mono);
-  font-size: 13px; color: var(--gray);
-}
-.main-header-title .mode { margin-left: 8px; }
-.main-header-actions { display: flex; gap: 8px; }
-.btn-icon {
-  background: transparent; border: 1px solid var(--navy4);
-  color: var(--gray); padding: 6px 12px;
-  font-family: var(--font-mono); font-size: 11px;
-  cursor: pointer; border-radius: 4px;
-  transition: all 0.12s;
-}
-.btn-icon:hover { color: var(--teal); border-color: var(--teal3); }
-
-.chat {
-  flex: 1 1 0; min-height: 0; overflow-y: auto; padding: 24px;
-  scroll-behavior: smooth;
-}
-.msg {
-  max-width: 820px; margin: 0 auto 20px;
-  padding: 14px 18px; border-radius: 8px;
-  animation: fadeIn 0.2s;
-}
-@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-
-.msg.user {
-  background: var(--navy3);
-  border-left: 3px solid var(--teal);
-}
-.msg.assistant {
-  background: transparent;
-  border-left: 3px solid var(--teal3);
-}
-.msg.system {
-  max-width: 820px; margin: 0 auto 16px;
-  padding: 8px 16px;
-  background: transparent;
-  border: 1px dashed var(--gray3);
-  color: var(--gray);
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-style: italic;
-  border-radius: 6px;
-}
-.msg.error {
-  background: rgba(248,113,113,0.08);
-  border-left: 3px solid var(--red);
-  color: var(--red);
-}
-/* Error action row — a thin button strip at the bottom of error cards
-   that lets the user log a note about the problem to the journal. */
-.msg-actions {
-  display: flex; gap: 8px;
-  margin-top: 10px; padding-top: 10px;
-  border-top: 1px solid rgba(248,113,113,0.2);
-}
-.msg-actions .btn-small {
-  background: transparent;
-  border: 1px solid rgba(248,113,113,0.3);
-  color: var(--red);
-  padding: 4px 10px;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  border-radius: 3px;
-  cursor: pointer;
-  transition: all 0.12s;
-}
-.msg-actions .btn-small:hover {
-  background: rgba(248,113,113,0.12);
-  border-color: var(--red);
-}
-.msg-actions .note-saved {
-  color: var(--green);
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  padding: 4px 10px;
-}
-.msg-label {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--gray2);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin-bottom: 6px;
-}
-.msg.assistant .msg-label { color: var(--teal); }
-/* Session 25 priority 1(b) — inline tool-call note. Sits between the
-   agent label and the streaming content as a sibling of .msg-content
-   (NOT inside it — .msg-content's innerHTML is rebuilt on every
-   streamed token, which would blow away anything nested inside). */
-.msg .tool-note {
-  font-size: 12px;
-  color: var(--gray2);
-  font-style: italic;
-  margin: 0 0 8px 0;
-  padding-left: 2px;
-  font-family: var(--font-mono);
-}
-.msg .tool-note.failed { color: var(--red); }
-.msg-content {
-  color: var(--white);
-  white-space: normal;
-  word-wrap: break-word;
-}
-/* Markdown-rendered content inside assistant messages */
-.msg-content h1, .msg-content h2, .msg-content h3,
-.msg-content h4, .msg-content h5, .msg-content h6 {
-  color: var(--teal);
+.practice p:last-child { margin-bottom: 0; }
+.practice strong {
   font-weight: 600;
-  letter-spacing: -0.01em;
-  margin: 18px 0 8px;
-  line-height: 1.3;
+  color: var(--navy);
 }
-.msg-content h1 { font-size: 22px; }
-.msg-content h2 { font-size: 18px; }
-.msg-content h3 { font-size: 16px; }
-.msg-content h4, .msg-content h5, .msg-content h6 { font-size: 14px; color: var(--white); }
-.msg-content h1:first-child, .msg-content h2:first-child, .msg-content h3:first-child { margin-top: 0; }
-.msg-content p { margin: 0 0 10px; }
-.msg-content p:last-child { margin-bottom: 0; }
-.msg-content strong { color: var(--white); font-weight: 600; }
-.msg-content em { color: var(--white); font-style: italic; }
-.msg-content ul, .msg-content ol { margin: 6px 0 12px; padding-left: 22px; }
-.msg-content li { margin: 3px 0; }
-.msg-content li::marker { color: var(--teal); }
-.msg-content a { color: var(--teal); text-decoration: none; border-bottom: 1px solid var(--teal3); }
-.msg-content a:hover { color: var(--white); border-bottom-color: var(--teal); }
-.msg-content code {
-  background: var(--navy3);
-  padding: 2px 6px; border-radius: 3px;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  color: var(--teal);
-}
-.msg-content pre {
-  background: var(--navy3);
-  border: 1px solid var(--navy4);
-  border-left: 3px solid var(--teal);
-  padding: 12px 14px;
+
+/* Key-value grid — used for timeline (How we got here)
+   and status lines (Where we are). Same shape as access.html's
+   .prereqs to keep one consistent pattern across the site. */
+.kvgrid {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 14px 24px;
+  margin: 18px 0 24px;
+  padding: 22px 24px;
+  background: var(--paper-2);
   border-radius: 4px;
-  overflow-x: auto;
-  margin: 10px 0;
 }
-.msg-content pre code {
-  background: transparent; padding: 0; color: var(--white);
-  font-size: 12px; line-height: 1.5;
-}
-.msg-content blockquote {
-  border-left: 3px solid var(--teal3);
-  padding: 2px 0 2px 14px;
-  margin: 10px 0;
-  color: var(--gray);
-  font-style: italic;
-}
-.msg-content hr {
-  border: none;
-  border-top: 1px solid var(--navy4);
-  margin: 18px 0;
-}
-.msg-content table {
-  border-collapse: collapse;
-  margin: 12px 0;
-  width: 100%;
-  font-size: 13px;
-}
-.msg-content th, .msg-content td {
-  border: 1px solid var(--navy4);
-  padding: 8px 12px;
-  text-align: left;
-  vertical-align: top;
-}
-.msg-content th {
-  background: var(--navy3);
+.kvgrid dt {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12.5px;
   color: var(--teal);
+  letter-spacing: 0.04em;
+  padding-top: 3px;
+}
+.kvgrid dd {
+  font-size: 14.5px;
+  color: var(--ink);
+  line-height: 1.6;
+}
+.kvgrid dd strong {
   font-weight: 600;
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  color: var(--navy);
 }
-.msg-content tr:nth-child(even) td { background: var(--navy3); }
-/* User messages stay as plain pre-wrap text */
-.msg.user .msg-content { white-space: pre-wrap; }
+@media (max-width: 560px) {
+  .kvgrid { grid-template-columns: 1fr; gap: 4px 0; padding: 18px 20px; }
+  .kvgrid dt { padding-top: 12px; }
+  .kvgrid dt:first-child { padding-top: 0; }
+}
 
-.plan-box {
-  max-width: 820px; margin: 0 auto 16px;
-  padding: 12px 16px; border-radius: 6px;
-  background: var(--navy2);
-  border: 1px solid var(--teal3);
-  font-family: var(--font-mono);
-  font-size: 12px;
-}
-.plan-box .plan-title {
-  color: var(--teal);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  font-size: 10px;
-  margin-bottom: 6px;
-}
-.plan-box .plan-step {
-  color: var(--gray);
-  padding: 3px 0;
-}
-.plan-box .plan-step .num { color: var(--teal); }
-.plan-box .plan-step .agent { color: var(--white); font-weight: 500; }
-
-/* Deliverable card — rendered when agent saves a file */
-.deliverable-card {
-  max-width: 820px; margin: 0 auto 16px;
-  background: var(--navy2);
-  border: 1px solid var(--navy4);
-  border-left: 3px solid var(--teal);
-  border-radius: 6px;
-  overflow: hidden;
-  animation: fadeIn 0.2s;
-}
-.dc-header {
-  padding: 14px 16px;
-  display: flex; align-items: flex-start; gap: 14px;
-  border-bottom: 1px solid var(--navy4);
-}
-.dc-icon {
-  font-size: 28px; line-height: 1; flex-shrink: 0;
-}
-.dc-main { flex: 1; min-width: 0; }
-.dc-filename {
-  font-family: var(--font-mono);
-  font-size: 14px; font-weight: 500;
-  color: var(--white);
-  word-break: break-all;
-}
-.dc-meta {
-  font-size: 11px; color: var(--gray2);
-  font-family: var(--font-mono);
-  letter-spacing: 0.03em;
-  margin-top: 3px;
-}
-.dc-meta .dc-agent { color: var(--teal); }
-.dc-meta .dc-category { color: var(--gray); text-transform: uppercase; }
-.dc-view {
-  background: var(--teal); color: var(--navy);
-  border: none; padding: 8px 14px;
+/* CTA block — inverts to navy */
+.cta {
+  margin-top: 36px;
+  padding: 28px 30px;
+  background: var(--navy);
+  color: var(--paper);
   border-radius: 4px;
-  font-family: var(--font-mono);
-  font-size: 12px; font-weight: 600;
-  text-decoration: none;
-  flex-shrink: 0;
-  transition: background 0.12s;
 }
-.dc-view:hover { background: var(--white); }
-.dc-preview {
-  padding: 12px 16px;
-  font-size: 13px; color: var(--gray);
-  font-family: var(--font-mono);
-  line-height: 1.5;
-  white-space: pre-wrap; word-wrap: break-word;
-  max-height: 90px; overflow: hidden;
-  position: relative;
-}
-.dc-preview::after {
-  content: ""; position: absolute; bottom: 0; left: 0; right: 0;
-  height: 30px; pointer-events: none;
-  background: linear-gradient(to bottom, transparent, var(--navy2));
-}
-.dc-path {
-  padding: 8px 16px;
-  font-size: 10px; color: var(--gray2);
-  font-family: var(--font-mono);
-  background: var(--navy3);
-  border-top: 1px solid var(--navy4);
-  letter-spacing: 0.03em;
-}
-
-.thinking {
-  max-width: 820px; margin: 0 auto 16px;
-  padding: 8px 14px;
-  color: var(--gray); font-style: italic; font-size: 13px;
-  font-family: var(--font-mono);
-  display: flex; align-items: center; gap: 10px;
-}
-.thinking .pulse {
-  width: 8px; height: 8px; border-radius: 50%;
-  background: var(--teal);
-  animation: pulse 1.2s infinite;
-}
-@keyframes pulse {
-  0%, 100% { opacity: 0.3; transform: scale(0.9); }
-  50% { opacity: 1; transform: scale(1.1); }
-}
-
-/* Input area */
-.input-area {
-  padding: 16px 24px 20px;
-  border-top: 1px solid var(--navy4);
-  background: var(--navy2);
-  /* Session 28 — positioning context for the @mention dropdown.
-     The dropdown anchors to .input-area so it floats above the
-     textarea instead of pushing layout. */
-  position: relative;
-}
-.input-row {
-  max-width: 820px; margin: 0 auto;
-  display: flex; gap: 8px; align-items: flex-end;
-}
-.agent-select {
-  background: var(--navy3); color: var(--white);
-  border: 1px solid var(--navy4);
-  padding: 10px 12px; border-radius: 6px;
-  font-family: var(--font-mono); font-size: 12px;
-  cursor: pointer;
-  min-width: 140px;
-}
-.agent-select:focus { outline: none; border-color: var(--teal); }
-
-.input-box {
-  flex: 1;
-  background: var(--navy3);
-  border: 1px solid var(--navy4);
-  border-radius: 6px;
-  padding: 10px 14px;
-  color: var(--white);
-  font-family: inherit; font-size: 14px;
-  resize: none;
-  min-height: 42px; max-height: 200px;
-  transition: border 0.12s;
-}
-.input-box:focus { outline: none; border-color: var(--teal); }
-.input-box::placeholder { color: var(--gray2); }
-
-.send-btn {
-  background: var(--teal); color: var(--navy);
-  border: none; padding: 11px 18px;
-  border-radius: 6px; cursor: pointer;
-  font-weight: 600; font-size: 14px;
-  font-family: inherit;
-  transition: all 0.12s;
-}
-.send-btn:hover:not(:disabled) { background: var(--white); }
-.send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-
-.hint {
-  max-width: 820px; margin: 6px auto 0;
-  font-size: 11px; color: var(--gray2);
-  font-family: var(--font-mono);
-}
-.hint .key {
-  background: var(--navy3); border: 1px solid var(--navy4);
-  padding: 1px 6px; border-radius: 3px; color: var(--gray);
-}
-
-/* Session 28 — @mention autocomplete dropdown.
-   Anchors to .input-area (which is position: relative). Floats above
-   the textarea, opens when the user types @ at start-of-input or
-   after whitespace, closes on Escape, click-outside, blur, or once
-   the @-token is whitespace-terminated. Inserts the FULL PATH of the
-   selected file (per session 28 decision — SharePoint forward-compat;
-   filename alone would be ambiguous across categories) plus a single
-   trailing space. The mention is purely cosmetic — agents already see
-   ingested files via _build_file_context() on every chat turn, so
-   selecting a file does not change agent context, only the visible
-   text the user is composing. */
-.mention-list {
-  position: absolute;
-  /* Sit just above the input-row. .input-area has 16px top padding,
-     so bottom: calc(100% - 16px) puts the dropdown's bottom edge
-     against the row's top. Then translateY pulls it up off the edge
-     and leaves a small visual gap. */
-  left: 24px; right: 24px;
-  bottom: calc(100% - 16px);
-  transform: translateY(-6px);
-  /* Center to the same 820px column as .input-row and .hint so the
-     three elements share a vertical axis on wide screens. */
-  max-width: 820px;
-  margin: 0 auto;
-  background: var(--navy3);
-  border: 1px solid var(--navy4);
-  border-radius: 6px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
-  max-height: 240px;
-  overflow-y: auto;
-  z-index: 50;
-  /* Hidden by default; toggled via the [hidden] attribute from JS. */
-}
-.mention-list[hidden] { display: none; }
-.mention-item {
-  display: flex; align-items: center; gap: 10px;
-  padding: 8px 12px;
-  cursor: pointer;
-  border-bottom: 1px solid var(--navy4);
-  font-size: 13px;
-  /* Each row has a name on top and a muted full path beneath; using
-     flex-direction:column on the text wrapper, see .mention-text. */
-}
-.mention-item:last-child { border-bottom: none; }
-.mention-item:hover,
-.mention-item.active {
-  background: var(--navy4);
-}
-.mention-item.active {
-  /* Subtle teal accent on the keyboard-highlighted row to distinguish
-     it from a hover-only row when the mouse is hovering one item but
-     the user is arrow-keying through the list. */
-  border-left: 2px solid var(--teal);
-  padding-left: 10px;
-}
-.mention-icon {
-  font-size: 16px;
-  flex-shrink: 0;
-}
-.mention-text {
-  display: flex; flex-direction: column;
-  min-width: 0;
-  flex: 1;
-}
-.mention-name {
-  color: var(--white);
+.cta h3 {
+  font-family: 'Fraunces', Georgia, serif;
   font-weight: 500;
-  /* Truncate long filenames rather than wrap — keeps row height
-     uniform so arrow-key navigation feels predictable. */
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.mention-path {
-  color: var(--gray2);
-  font-family: var(--font-mono);
-  font-size: 11px;
-  /* Same truncation logic; Windows paths can be 200+ chars. */
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  margin-top: 2px;
-}
-.mention-empty {
-  padding: 12px 14px;
-  color: var(--gray2);
-  font-style: italic;
-  font-size: 13px;
-  /* Empty-state hint — styled as a non-interactive disabled-looking
-     row so the user sees that the trigger worked but nothing matches
-     yet. Clicking does nothing. */
-  cursor: default;
-}
-
-/* Session 24 — file attach (paperclip) button + drag-and-drop overlay.
-   The paperclip sits between the agent select and the textarea in
-   .input-row; click triggers a hidden <input type=file>. The overlay
-   is a fixed full-window scrim that fades in on dragenter (with a
-   depth counter so child-element transitions don't cause flicker)
-   and fades out on drop or dragleave back to depth 0. Both routes
-   feed the same uploadFiles() handler that POSTs to /api/upload. */
-.attach-btn {
-  background: var(--navy3); color: var(--gray);
-  border: 1px solid var(--navy4);
-  border-radius: 6px;
-  padding: 0 12px;
-  font-size: 18px; line-height: 1;
-  cursor: pointer;
-  transition: all 0.12s;
-  height: 42px;
-  display: flex; align-items: center; justify-content: center;
-}
-.attach-btn:hover { color: var(--teal); border-color: var(--teal3); }
-.attach-btn:active { color: var(--white); }
-.attach-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-
-.drop-overlay {
-  position: fixed; inset: 0;
-  background: rgba(6, 15, 26, 0.85);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  z-index: 1000;
-  display: flex; align-items: center; justify-content: center;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.15s;
-}
-.drop-overlay.active { pointer-events: auto; opacity: 1; }
-.drop-overlay-inner {
-  background: var(--navy2);
-  border: 2px dashed var(--teal);
-  border-radius: 12px;
-  padding: 48px 64px;
-  text-align: center;
-  max-width: 520px;
-}
-.drop-overlay-icon { font-size: 48px; margin-bottom: 16px; }
-.drop-overlay-title {
-  color: var(--teal);
-  font-family: var(--font-mono);
-  font-size: 20px;
-  margin-bottom: 8px;
+  font-variation-settings: "opsz" 96, "SOFT" 30;
+  font-size: 22px;
+  color: var(--paper);
   letter-spacing: -0.01em;
+  margin-bottom: 12px;
 }
-.drop-overlay-sub {
-  color: var(--gray);
-  font-family: var(--font-mono);
-  font-size: 12px;
+.cta p {
+  font-size: 15px;
+  color: rgba(250, 250, 247, 0.82);
+  margin-bottom: 18px;
+  line-height: 1.6;
+  max-width: 600px;
 }
-
-/* Welcome screen */
-.welcome {
-  max-width: 640px; margin: 80px auto 0; text-align: center;
-  padding: 0 24px;
+.cta a.btn {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--paper);
+  background: transparent;
+  border: 1px solid rgba(250, 250, 247, 0.3);
+  padding: 10px 18px;
+  border-radius: 3px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  display: inline-block;
 }
-.welcome .w-title {
-  font-size: 28px; font-weight: 600;
-  color: var(--white); margin-bottom: 8px;
-  letter-spacing: -0.02em;
-}
-.welcome .w-sub {
-  color: var(--gray); font-size: 15px;
-  margin-bottom: 32px;
-}
-.welcome .w-examples {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
-  text-align: left;
-}
-.welcome .w-ex {
-  padding: 12px 14px; border-radius: 6px;
-  background: var(--navy2); border: 1px solid var(--navy4);
-  cursor: pointer; transition: all 0.12s;
-  font-size: 13px; color: var(--gray);
-}
-.welcome .w-ex:hover { border-color: var(--teal3); color: var(--white); }
-.welcome .w-ex .ex-agent {
-  font-family: var(--font-mono);
-  font-size: 10px; color: var(--teal);
-  text-transform: uppercase; letter-spacing: 0.08em;
-  margin-bottom: 4px;
+.cta a.btn:hover {
+  background: var(--teal);
+  border-color: var(--teal);
+  color: var(--paper);
 }
 
-/* Scrollbar */
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: var(--navy); }
-::-webkit-scrollbar-thumb { background: var(--navy4); border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: var(--gray3); }
+/* Footer */
+.foot {
+  margin-top: 72px;
+  padding-top: 28px;
+  border-top: 1px solid var(--rule);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 13px;
+  color: var(--dim);
+}
+
+.foot a {
+  color: var(--teal);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease;
+}
+
+.foot a:hover { border-color: var(--teal); }
+
+@media (max-width: 560px) {
+  .stage { padding: 40px 22px 64px; }
+  .foot { flex-direction: column; gap: 8px; align-items: flex-start; }
+}
+
+::selection {
+  background: var(--teal);
+  color: var(--paper);
+}
 </style>
 </head>
 <body>
 
-<!-- Session 24 — drag-and-drop overlay. Hidden by default, fades in
-     when files are dragged anywhere over the window. See drop handlers
-     in the script section below. -->
-<div class="drop-overlay" id="drop-overlay">
-  <div class="drop-overlay-inner">
-    <div class="drop-overlay-icon">📥</div>
-    <div class="drop-overlay-title">Drop file to ingest</div>
-    <div class="drop-overlay-sub">.txt .md .pdf .docx .xlsx .pptx .msg .eml</div>
+<div class="stage">
+
+  <div class="topbar">
+    <a href="/" class="wordmark">Tavern<span class="dot">OS</span></a>
+    <span class="crumb">Closed alpha</span>
   </div>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="kicker">An AI workstation</div>
+    <h1>Ten specialists who do the work, <em>not just talk about it.</em></h1>
+    <p>If your team's senior people are drowning in work a well-trained junior could handle &mdash; proposals, reports, audits, research, meeting summaries, lead lists &mdash; TavernOS is built for you.</p>
+    <p class="sub">Real Word docs, slide decks, Excel models. Not chat transcripts.</p>
+  </section>
+
+  <!-- THE CREW -->
+  <h2 class="section"><span class="step-num">01</span>The crew</h2>
+  <p class="body">Ten specialists installed on your laptop. Sam routes; the rest do.</p>
+  <div class="crew">
+    <div class="crew-row"><span class="crew-name">Sam</span><span class="crew-role">Routes every request to the right specialist</span></div>
+    <div class="crew-row"><span class="crew-name">Rebecca</span><span class="crew-role">Spreadsheets, financial models, slides</span></div>
+    <div class="crew-row"><span class="crew-name">Woody</span><span class="crew-role">Proposals, content, email drafts</span></div>
+    <div class="crew-row"><span class="crew-name">Frasier</span><span class="crew-role">Strategy and architecture work</span></div>
+    <div class="crew-row"><span class="crew-name">Carla</span><span class="crew-role">Ruthless editing &mdash; "grill me" your draft</span></div>
+    <div class="crew-row"><span class="crew-name">Coach</span><span class="crew-role">Meeting summaries, PRDs, action items</span></div>
+    <div class="crew-row"><span class="crew-name">Lilith</span><span class="crew-role">Operational audits with real evidence</span></div>
+    <div class="crew-row"><span class="crew-name">Diane</span><span class="crew-role">Customer support automation</span></div>
+    <div class="crew-row"><span class="crew-name">Cliff</span><span class="crew-role">Research, lead intel, document analysis</span></div>
+    <div class="crew-row"><span class="crew-name">Norm</span><span class="crew-role">General work, everything else</span></div>
+  </div>
+
+  <!-- IN PRACTICE -->
+  <h2 class="section"><span class="step-num">02</span>What it looks like</h2>
+  <p class="body">Sarah is the COO of a 40-person company. Imagine yours. She spends 4&ndash;6 hours every month building the leadership team's monthly business review &mdash; pulling numbers from the CRM, finance, and support tool; making the charts; writing the narrative; formatting it for the meeting.</p>
+
+  <div class="practice">
+    <div class="practice-label">First run with TavernOS</div>
+    <p>Cliff pulled the source data. Rebecca built the charts and breakdown tables. Woody wrote the exec narrative. Carla grilled the draft. Sarah reviewed and approved in about 90 minutes &mdash; <strong>down from 4&ndash;6 hours.</strong></p>
+    <p><strong>Three months later:</strong> the report ships the same Monday every month, reviewed in under 90 minutes. The system has learned Sarah's voice, her CEO's priorities, and which sections leadership actually reads &mdash; every cycle sharper than the last.</p>
+  </div>
+
+  <!-- WHY DIFFERENT -->
+  <h2 class="section"><span class="step-num">03</span>Why it's different</h2>
+  <ul class="body">
+    <li><strong>Real files, not chat output.</strong> Send the Word doc or deck straight to your client or CFO.</li>
+    <li><strong>Remembers every account.</strong> Switch between clients and every agent knows the context.</li>
+    <li><strong>Runs locally.</strong> Your data stays on your machine. No cloud dashboard, no privacy risk with client work.</li>
+    <li><strong>Gets sharper with use.</strong> Learns your voice, your pricing, your standard terms &mdash; the 20th proposal is sharper than the 1st.</li>
+  </ul>
+
+  <!-- HOW WE GOT HERE -->
+  <h2 class="section"><span class="step-num">04</span>How we got here</h2>
+  <p class="body">Six days, six load-bearing things shipped. The work the page won't show, but should explain.</p>
+  <dl class="kvgrid">
+    <dt>April 21&ndash;22</dt>
+    <dd><strong>Five deliverable types shipped.</strong> Proposals, monthly business reviews, executive decks, operational audits, research reports. Each one clears its own rubric against the dogfood test scenario.</dd>
+
+    <dt>April 22</dt>
+    <dd><strong>Site live.</strong> tavernos.ai on Cloudflare, contact email working, the friend-installer page wired to a clean ZIP. The product was real before the page was.</dd>
+
+    <dt>April 23</dt>
+    <dd><strong>A test framework that doesn't call the API.</strong> The kind of bug that used to take twelve agent runs to find now surfaces in two seconds. Runs on every change. About a hundred tests today.</dd>
+
+    <dt>April 24</dt>
+    <dd><strong>Invocation reliability fixed.</strong> Got the model to actually use its tools when it should. The same prompts that called the tool one time in four now call it more than four times in five.</dd>
+
+    <dt>April 25</dt>
+    <dd><strong>Three ways to bring a file in.</strong> Slash command, paperclip button, drag-and-drop. One backend, three entry points, the same chat output afterward.</dd>
+
+    <dt>April 26</dt>
+    <dd><strong>Memory scoped per-client.</strong> Each client gets its own memory and file index. Nothing leaks across clients. Pre-existing data migrates to a default client on first restart &mdash; no re-ingestion.</dd>
+  </dl>
+
+  <!-- WHERE WE ARE -->
+  <h2 class="section"><span class="step-num">05</span>Where we are &middot; April 2026</h2>
+  <dl class="kvgrid">
+    <dt>What works</dt>
+    <dd>Five deliverable types, a rubric-driven evaluator with a regen loop, and an honest internal calibration layer.</dd>
+
+    <dt>What's next</dt>
+    <dd>A handful of closed-alpha partners running real engagements. Slack and Drive integrations behind them.</dd>
+
+    <dt>What we won't do</dt>
+    <dd>Ship you a demo that looks like production. Promise agent autonomy we haven't shipped. Invent testimonials.</dd>
+
+    <dt>Why this page is thin</dt>
+    <dd>Because the product isn't. Writing marketing copy before we have customers is how startups drift.</dd>
+  </dl>
+
+  <!-- CTA -->
+  <div class="cta">
+    <h3>Want to try it?</h3>
+    <p>I'll set you up with my API key for a two-week run. Bring a real task &mdash; a proposal you've been putting off, a report you dread every month, an audit you need to ship. No pitch deck, no sales call. We install it on your laptop, I show you the crew, you run your real work through it, and you tell me whether it actually saved you time.</p>
+    <a class="btn" href="mailto:contact@tavernos.ai">contact@tavernos.ai &rarr;</a>
+  </div>
+
+  <div class="foot">
+    <div>TavernOS &middot; Dan Cobb &middot; Closed alpha</div>
+    <div><a href="mailto:contact@tavernos.ai">contact@tavernos.ai</a></div>
+  </div>
+
 </div>
-
-<div class="app">
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <div class="sidebar-header">
-      <div class="brand">◆ TavernOS</div>
-      <div class="brand-sub" id="brand-sub">loading…</div>
-    </div>
-
-    <div class="sidebar-section">
-      <div class="sidebar-label">Status</div>
-      <div class="status-line"><span class="k">Mode</span><span class="v teal" id="st-mode">—</span></div>
-      <div class="status-line"><span class="k">Model</span><span class="v" id="st-model">—</span></div>
-      <div class="status-line"><span class="k">Agents</span><span class="v" id="st-agents">—</span></div>
-      <div class="status-line"><span class="k">Skills</span><span class="v" id="st-skills">—</span></div>
-      <div class="status-line"><span class="k">Files</span><span class="v" id="st-files">—</span></div>
-    </div>
-
-    <div class="sidebar-section">
-      <div class="sidebar-label">Crew</div>
-      <div id="agents-list"></div>
-    </div>
-
-    <div class="sidebar-section">
-      <div class="sidebar-label">Files in memory</div>
-      <div id="files-list"><div class="file-item" style="color:var(--gray2)">None yet.</div></div>
-    </div>
-  </aside>
-
-  <!-- MAIN -->
-  <main class="main">
-    <div class="main-header">
-      <div class="main-header-title">
-        <span id="hdr-company">TavernOS</span>
-        <span class="mode" id="hdr-mode"></span>
-      </div>
-      <div class="main-header-actions">
-        <button class="btn-icon" id="errors-btn" onclick="showErrors()" title="View error journal">Errors</button>
-        <button class="btn-icon" onclick="clearChat()">Clear</button>
-        <button class="btn-icon" onclick="refreshAll()">Refresh</button>
-      </div>
-    </div>
-
-    <div class="chat" id="chat">
-      <div class="welcome" id="welcome">
-        <div class="w-title">Yeah, yeah… what'll it be?</div>
-        <div class="w-sub">Ask anything. Sam routes to the right specialist — or pick one from the dropdown below.</div>
-        <div class="w-examples">
-          <div class="w-ex" onclick="fillExample(this)">
-            <div class="ex-agent">Woody · proposals</div>
-            Write a proposal for an ops audit for a 20-person SaaS
-          </div>
-          <div class="w-ex" onclick="fillExample(this)">
-            <div class="ex-agent">Carla · critique</div>
-            Grill me on this subject line: "Hey — quick question about your ops"
-          </div>
-          <div class="w-ex" onclick="fillExample(this)">
-            <div class="ex-agent">Coach · meetings</div>
-            Summarize these notes into action items: [paste notes]
-          </div>
-          <div class="w-ex" onclick="fillExample(this)">
-            <div class="ex-agent">Lilith · audits</div>
-            Run an ops audit for Brightwave based on the intake files
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="input-area">
-      <!-- Session 28 — @mention autocomplete dropdown.
-           Hidden by default; toggled by updateMentionFromInput() based
-           on whether the textarea's caret sits inside a valid @-token.
-           Renders dynamically from FILES_CACHE; see openMentionList()
-           and renderMentionList() below. Anchored to .input-area which
-           was promoted to position: relative for this. -->
-      <div class="mention-list" id="mention-list" hidden></div>
-      <div class="input-row">
-        <select class="agent-select" id="agent-select">
-          <option value="">Sam routes →</option>
-        </select>
-        <!-- Session 24 — paperclip click target. The visible button
-             dispatches to a hidden <input type=file> which is the actual
-             file picker; both routes call uploadFiles(). multiple=true
-             so users can attach a batch in one go. -->
-        <button class="attach-btn" id="attach-btn" type="button"
-                title="Attach file (or drag anywhere)"
-                onclick="document.getElementById('file-input').click()">📎</button>
-        <input type="file" id="file-input" multiple
-               accept=".txt,.md,.pdf,.docx,.xlsx,.pptx,.msg,.eml"
-               style="display:none"
-               onchange="if(this.files.length){uploadFiles(this.files); this.value='';}">
-        <textarea
-          class="input-box" id="input"
-          placeholder="Message the tavern…  (Enter to send, Shift+Enter for new line, @ to reference a file)"
-          rows="1"
-          onkeydown="handleKey(event)"
-          oninput="autoResize(this); updateMentionFromInput();"
-        ></textarea>
-        <button class="send-btn" id="send" onclick="sendMessage()">Send</button>
-      </div>
-      <div class="hint">
-        <span class="key">Enter</span> send · <span class="key">Shift+Enter</span> newline · <span class="key">@</span> file · drop or <span class="key">/ingest &lt;path&gt;</span>
-      </div>
-    </div>
-  </main>
-</div>
-
-<script>
-// ═══════════════════════════════════════════════════════════════════════════════
-//  STATE
-// ═══════════════════════════════════════════════════════════════════════════════
-let IS_STREAMING = false;
-let CURRENT_ASSISTANT_EL = null;
-let AGENTS = [];
-
-// Session 28 — FILES_CACHE backs both the right-rail files panel and
-// the @mention dropdown. Single source of truth, populated by
-// loadFiles(); previously only the DOM had this list, which meant the
-// mention picker would have had to refetch on every open. The cache
-// lives at module scope so it survives across loadFiles() calls and
-// dropdown open/close cycles.
-let FILES_CACHE = [];
-
-// Session 28 — @mention dropdown state.
-//   MENTION_OPEN     : whether the dropdown is currently visible.
-//   MENTION_ITEMS    : filtered file list, in display order.
-//   MENTION_ACTIVE   : index into MENTION_ITEMS for the keyboard-
-//                      highlighted row, or -1 if no items (empty
-//                      state). Mouse hover does NOT change this; only
-//                      arrow keys and click-to-select do.
-//   MENTION_TOKEN_AT : index in the textarea where the triggering @
-//                      sits. Used at insertion time to know what
-//                      stretch of text to replace.
-let MENTION_OPEN     = false;
-let MENTION_ITEMS    = [];
-let MENTION_ACTIVE   = -1;
-let MENTION_TOKEN_AT = -1;
-
-const chat    = document.getElementById('chat');
-const welcome = document.getElementById('welcome');
-const input   = document.getElementById('input');
-const sendBtn = document.getElementById('send');
-const mentionList = document.getElementById('mention-list');
-
-// ═══════════════════════════════════════════════════════════════════════════════
-//  INIT
-// ═══════════════════════════════════════════════════════════════════════════════
-// Configure marked.js once at startup. Previously setOptions ran inside
-// renderMarkdown on every streamed token — options never change, so this was
-// wasted work during long streaming responses.
-if (typeof marked !== 'undefined') {
-  marked.setOptions({
-    gfm: true,         // GitHub-flavored Markdown — tables, strikethrough, autolinks
-    breaks: true,      // treat single newlines as <br> (matches how agents write)
-    headerIds: false,  // no auto-generated id attributes (cleaner DOM)
-    mangle: false,     // don't obfuscate email addresses
-  });
-}
-
-window.addEventListener('DOMContentLoaded', async () => {
-  await refreshAll();
-  input.focus();
-});
-
-// One place to re-sync UI state with the backend. Used at init and by the
-// Refresh button — previously Refresh only reloaded status, which was a lie:
-// the sidebar agents and files lists stayed stale until full page reload.
-async function refreshAll() {
-  await loadStatus();
-  await loadAgents();
-  await loadFiles();
-}
-
-async function loadStatus() {
-  try {
-    const r = await fetch('/api/status');
-    const s = await r.json();
-    document.getElementById('brand-sub').textContent = s.version + ' · ' + s.mode;
-    document.getElementById('st-mode').textContent = s.mode;
-    document.getElementById('st-model').textContent = s.model_id || '—';
-    document.getElementById('st-agents').textContent = s.agents;
-    document.getElementById('st-skills').textContent = s.skills;
-    document.getElementById('st-files').textContent = s.files;
-    document.getElementById('hdr-company').textContent = s.company;
-    const hdrMode = document.getElementById('hdr-mode');
-    hdrMode.textContent = s.mode === 'dev' ? '[DEV]' : '';
-    hdrMode.style.color = 'var(--amber)';
-  } catch (e) {
-    console.error('Status load failed:', e);
-  }
-}
-
-async function loadAgents() {
-  try {
-    const r = await fetch('/api/agents');
-    AGENTS = await r.json();
-    const list = document.getElementById('agents-list');
-    const select = document.getElementById('agent-select');
-    list.innerHTML = '';
-    while (select.options.length > 1) select.remove(1);
-
-    // Session 25 priority 1(a) — dedup by display name. When 2+ agents
-    // share a `name` (today: rebecca-mbr + rebecca-deck both = "Rebecca"),
-    // collapse them into one sidebar item / one dropdown option whose id
-    // is the lowercased display name. Backend's _resolve_umbrella_agent
-    // picks a concrete slug at dispatch time based on user-input signals.
-    // Single-agent personas render unchanged (id stays as the slug).
-    //
-    // Ordering preserved from the API response; first occurrence wins for
-    // the merged entry's clickable position.
-    const groups = new Map();  // display name (lowercased) → array of agents
-    const order = [];          // first-seen order of group keys
-    for (const a of AGENTS) {
-      const key = (a.name || a.id || '').toLowerCase();
-      if (!groups.has(key)) { groups.set(key, []); order.push(key); }
-      groups.get(key).push(a);
-    }
-
-    for (const key of order) {
-      const groupAgents = groups.get(key);
-      const first = groupAgents[0];
-      const merged = groupAgents.length > 1;
-      // For merged groups, the id is the lowercased display name (the
-      // umbrella id the backend resolver expects). For single-agent
-      // groups, the id is just the agent's slug as before.
-      const entryId   = merged ? key : first.id;
-      const entryName = first.name;
-
-      const el = document.createElement('div');
-      el.className = 'agent-item';
-      el.innerHTML = '<span class="dot"></span><span class="agent-name">' + escapeHtml(entryName) + '</span>';
-      el.onclick = () => selectAgent(entryId, el);
-      list.appendChild(el);
-
-      const opt = document.createElement('option');
-      opt.value = entryId;
-      opt.textContent = entryName;
-      select.appendChild(opt);
-    }
-  } catch (e) {
-    console.error('Agents load failed:', e);
-  }
-}
-
-async function loadFiles() {
-  try {
-    const r = await fetch('/api/files');
-    const files = await r.json();
-    // Session 28 — populate FILES_CACHE so the @mention dropdown
-    // reads from the same source as the right-rail panel. Stored
-    // even if the panel isn't going to show every entry (the right
-    // rail caps at 8; the mention picker may want to see all of
-    // them — though we cap that too, downstream, in
-    // openMentionList()).
-    FILES_CACHE = Array.isArray(files) ? files : [];
-    const list = document.getElementById('files-list');
-    if (!files || files.length === 0) {
-      list.innerHTML = '<div class="file-item" style="color:var(--gray2)">None yet.</div>';
-      return;
-    }
-    list.innerHTML = '';
-    for (const f of files.slice(0, 8)) {
-      const el = document.createElement('div');
-      el.className = 'file-item';
-      el.innerHTML = '<span class="icon">' + (f.icon || '📄') + '</span><span>' + escapeHtml(f.name) + '</span>';
-      list.appendChild(el);
-    }
-  } catch (e) {
-    console.error('Files load failed:', e);
-  }
-}
-
-// ═══════════════════════════════════════════════════════════════════════════════
-//  AGENT SELECTION
-// ═══════════════════════════════════════════════════════════════════════════════
-function selectAgent(agentId, el) {
-  document.querySelectorAll('.agent-item').forEach(a => a.classList.remove('active'));
-  if (el) el.classList.add('active');
-  document.getElementById('agent-select').value = agentId;
-  input.focus();
-}
-
-// ═══════════════════════════════════════════════════════════════════════════════
-//  CHAT
-// ═══════════════════════════════════════════════════════════════════════════════
-function fillExample(el) {
-  const lines = el.textContent.trim().split('\n').map(s => s.trim()).filter(Boolean);
-  input.value = lines[lines.length - 1];
-  autoResize(input);
-  input.focus();
-}
-
-function handleKey(e) {
-  // Session 28 — intercept keys when the @mention dropdown is open.
-  // Order matters: this branch must precede the Enter-sends branch
-  // so Enter inserts a mention rather than sending the message.
-  if (MENTION_OPEN) {
-    if (e.key === 'Escape') {
-      e.preventDefault();
-      closeMentionList();
-      return;
-    }
-    if (e.key === 'ArrowDown') {
-      e.preventDefault();
-      moveMentionActive(+1);
-      return;
-    }
-    if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      moveMentionActive(-1);
-      return;
-    }
-    if (e.key === 'Enter' || e.key === 'Tab') {
-      // Only intercept when there's something to insert. Empty-
-      // state (no files / no matches) lets Enter fall through to
-      // the send path below — pressing Enter into an empty
-      // dropdown should not silently swallow the keystroke.
-      if (MENTION_ACTIVE >= 0 && MENTION_ITEMS.length) {
-        e.preventDefault();
-        selectMention(MENTION_ACTIVE);
-        return;
-      }
-      // No items — close the dropdown so the next branch handles
-      // Enter as a normal send. Tab falls through to native focus
-      // movement.
-      closeMentionList();
-      // For Tab in the no-match case, fall through (don't send).
-      if (e.key === 'Tab') return;
-    }
-  }
-  if (e.key === 'Enter' && !e.shiftKey) {
-    e.preventDefault();
-    sendMessage();
-  }
-}
-
-function autoResize(el) {
-  el.style.height = 'auto';
-  el.style.height = Math.min(el.scrollHeight, 200) + 'px';
-}
-
-async function sendMessage() {
-  if (IS_STREAMING) return;
-  const message = input.value.trim();
-  if (!message) return;
-
-  const targetAgent = document.getElementById('agent-select').value || null;
-
-  if (welcome) welcome.style.display = 'none';
-
-  // Session 28 — close the mention dropdown if it's somehow still
-  // open at send time. This shouldn't happen with the handleKey
-  // intercept (Enter inserts when open) but defends against edge
-  // cases like programmatic sends or a click on Send while the
-  // dropdown is up.
-  if (MENTION_OPEN) closeMentionList();
-
-  appendMessage('user', 'You', message);
-  input.value = '';
-  autoResize(input);
-
-  IS_STREAMING = true;
-  sendBtn.disabled = true;
-  CURRENT_ASSISTANT_EL = null;
-
-  const thinkingEl = appendThinking('sending…');
-
-  try {
-    const response = await fetch('/api/chat', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({message, agent: targetAgent}),
-    });
-
-    if (!response.ok) {
-      const err = await response.json().catch(() => ({}));
-      thinkingEl.remove();
-      renderErrorCard(err.error || ('HTTP ' + response.status));
-      return;
-    }
-
-    await streamResponse(response, thinkingEl);
-  } catch (e) {
-    thinkingEl.remove();
-    renderErrorCard(String(e));
-  } finally {
-    IS_STREAMING = false;
-    sendBtn.disabled = false;
-    input.focus();
-    loadStatus();
-  }
-}
-
-async function streamResponse(response, thinkingEl) {
-  const reader = response.body.getReader();
-  const decoder = new TextDecoder();
-  let buffer = '';
-
-  while (true) {
-    const {done, value} = await reader.read();
-    if (done) break;
-    buffer += decoder.decode(value, {stream: true});
-    const parts = buffer.split('\n\n');
-    buffer = parts.pop();
-    for (const part of parts) {
-      const evt = parseSSE(part);
-      if (evt) handleEvent(evt, thinkingEl);
-    }
-  }
-  if (thinkingEl && thinkingEl.parentNode) thinkingEl.remove();
-}
-
-function parseSSE(text) {
-  const lines = text.split('\n');
-  let event = 'message', data = '';
-  for (const line of lines) {
-    if (line.startsWith('event: ')) event = line.slice(7).trim();
-    else if (line.startsWith('data: ')) data += line.slice(6);
-  }
-  if (!data) return null;
-  try { return {event, data: JSON.parse(data)}; }
-  catch { return {event, data: {raw: data}}; }
-}
-
-function handleEvent(evt, thinkingEl) {
-  const {event, data} = evt;
-
-  if (event === 'status') {
-    if (thinkingEl && thinkingEl.parentNode) {
-      thinkingEl.querySelector('span:last-child').textContent = data.message;
-    }
-  } else if (event === 'plan_start') {
-    if (thinkingEl && thinkingEl.parentNode) thinkingEl.remove();
-    renderPlan(data);
-  } else if (event === 'step_start') {
-    CURRENT_ASSISTANT_EL = appendMessage('assistant', data.agent, '');
-  } else if (event === 'token') {
-    if (!CURRENT_ASSISTANT_EL) {
-      CURRENT_ASSISTANT_EL = appendMessage('assistant', data.agent || 'Norm', '');
-    }
-    const content = CURRENT_ASSISTANT_EL.querySelector('.msg-content');
-    // Accumulate raw Markdown in a data attribute, re-render HTML on each token.
-    // This gives live-render during streaming — headings/lists/tables appear
-    // as the model writes them, not just after the response completes.
-    const prev = content.dataset.raw || '';
-    content.dataset.raw = prev + data.text;
-    content.innerHTML = renderMarkdown(content.dataset.raw);
-    autoScroll();
-  } else if (event === 'step_end') {
-    CURRENT_ASSISTANT_EL = null;
-  } else if (event === 'tool_call') {
-    // Session 25 priority 1(b) — render an inline note when an agent
-    // invokes a first-party tool mid-stream. Visible signal that the
-    // pause in token output is the tool firing, not the model stalling.
-    //
-    // The note is appended as a sibling of .msg-content (between the
-    // label and the streaming text) — NOT inside .msg-content, because
-    // every streamed token rebuilds that div's innerHTML and would
-    // destroy anything nested. Multiple tool calls in one turn append
-    // additional notes in arrival order. tool_result attaches a status
-    // suffix to the most recent matching note.
-    if (CURRENT_ASSISTANT_EL) {
-      const note = document.createElement('div');
-      note.className = 'tool-note';
-      note.dataset.tool = data.tool || '';
-      const verb = data.tool === 'read_ingested_file' ? 'read' : 'used';
-      const obj  = (data.args && data.args.filename) ? data.args.filename : (data.tool || 'a tool');
-      note.dataset.label = '↳ ' + (data.agent || 'Agent') + ' ' + verb + ' ' + obj;
-      note.textContent = note.dataset.label;
-      const content = CURRENT_ASSISTANT_EL.querySelector('.msg-content');
-      CURRENT_ASSISTANT_EL.insertBefore(note, content);
-      autoScroll();
-    }
-  } else if (event === 'tool_result') {
-    // Mark the most recent matching tool-note with success/failure. Most
-    // recent in DOM order; matches by tool name to handle the (rare)
-    // case where a single turn fires multiple different tools in flight.
-    if (CURRENT_ASSISTANT_EL) {
-      const notes = CURRENT_ASSISTANT_EL.querySelectorAll('.tool-note');
-      let target = null;
-      for (let i = notes.length - 1; i >= 0; i--) {
-        if (!data.tool || notes[i].dataset.tool === data.tool) { target = notes[i]; break; }
-      }
-      if (target) {
-        if (data.is_error) {
-          target.classList.add('failed');
-          target.textContent = (target.dataset.label || target.textContent) + ' (failed)';
-        } else {
-          target.textContent = (target.dataset.label || target.textContent) + ' ✓';
-        }
-      }
-    }
-  } else if (event === 'deliverable_saved') {
-    // Agent saved a file. Strip the marker line from the current assistant
-    // message (so "DELIVERABLE_SAVED: ..." doesn't show in chat), then render
-    // a deliverable card with preview + view button.
-    if (CURRENT_ASSISTANT_EL) {
-      const content = CURRENT_ASSISTANT_EL.querySelector('.msg-content');
-      const raw = content.dataset.raw || '';
-      const cleaned = raw.replace(/^DELIVERABLE_SAVED:\s*.+$/m, '').replace(/\n{3,}/g, '\n\n').trimEnd();
-      content.dataset.raw = cleaned;
-      content.innerHTML = renderMarkdown(cleaned);
-    }
-    renderDeliverableCard(data);
-  } else if (event === 'plan_end') {
-    appendSystem(data.message);
-  } else if (event === 'error') {
-    renderErrorCard(data.message);
-  }
-}
-
-function renderPlan(data) {
-  const box = document.createElement('div');
-  box.className = 'plan-box';
-  let html = '<div class="plan-title">Sam\'s Plan · ' + escapeHtml(data.model || '') + '</div>';
-  html += '<div class="plan-step"><span class="agent">Intent:</span> ' + escapeHtml(data.intent) + '</div>';
-  (data.steps || []).forEach((s, i) => {
-    html += '<div class="plan-step"><span class="num">' + (i+1) + '.</span> <span class="agent">' +
-            escapeHtml(s.agent.toUpperCase()) + '</span> — ' + escapeHtml(s.task) + '</div>';
-  });
-  box.innerHTML = html;
-  chat.appendChild(box);
-  autoScroll();
-}
-
-function renderErrorCard(message) {
-  const el = document.createElement('div');
-  el.className = 'msg error';
-  const safeMsg = escapeHtml(message || 'Unknown error');
-  // Note: we attach the click handler via addEventListener below rather than
-  // building an onclick="..." attribute. Previously the error string was
-  // JSON.stringify'd and quote-escaped into the attribute, which was fragile
-  // for messages containing backslashes or unusual unicode. Closure is clean.
-  el.innerHTML =
-    '<div class="msg-label">Error</div>' +
-    '<div class="msg-content">' + safeMsg + '</div>' +
-    '<div class="msg-actions">' +
-      '<button class="btn-small" data-action="log-note">Log note</button>' +
-      '<button class="btn-small" data-action="view-journal">View journal</button>' +
-    '</div>';
-  chat.appendChild(el);
-  const logBtn = el.querySelector('[data-action="log-note"]');
-  const viewBtn = el.querySelector('[data-action="view-journal"]');
-  logBtn.addEventListener('click', () => logNote(logBtn, message || ''));
-  viewBtn.addEventListener('click', () => showErrors());
-  autoScroll();
-  return el;
-}
-
-async function logNote(btnEl, relatedError) {
-  const note = prompt(
-    "What would you like to log about this error?\n" +
-    "(Your note will be saved to the error journal alongside the auto-captured details, " +
-    "so you can review it later and decide whether to turn it into a product improvement.)"
-  );
-  if (!note || !note.trim()) return;
-  try {
-    const lastUserMsg = Array.from(document.querySelectorAll('.msg.user .msg-content'))
-      .map(el => el.textContent).slice(-1)[0] || '';
-    const r = await fetch('/api/errors/note', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        note: note.trim(),
-        context: {user_input: lastUserMsg, related_error: relatedError || ''}
-      })
-    });
-    if (r.ok) {
-      // Replace the button area with a confirmation
-      const actions = btnEl.closest('.msg-actions');
-      if (actions) {
-        actions.innerHTML = '<span class="note-saved">✓ Note logged</span>';
-      }
-    } else {
-      alert('Could not save note. Check the browser console for details.');
-    }
-  } catch (e) {
-    alert('Network error saving note: ' + e);
-  }
-}
-
-async function showErrors() {
-  try {
-    const r = await fetch('/api/errors?limit=30');
-    const data = await r.json();
-    openErrorModal(data);
-  } catch (e) {
-    alert('Could not fetch error journal: ' + e);
-  }
-}
-
-function openErrorModal(data) {
-  // Remove any existing modal
-  const existing = document.getElementById('error-modal');
-  if (existing) existing.remove();
-
-  const overlay = document.createElement('div');
-  overlay.id = 'error-modal';
-  overlay.style.cssText =
-    'position:fixed;inset:0;background:rgba(6,15,26,0.88);z-index:1000;' +
-    'display:flex;align-items:flex-start;justify-content:center;padding:60px 20px;overflow-y:auto;';
-
-  // Close the modal and remove its keydown listener. Passed to click-outside
-  // and Esc handlers, plus the explicit Close button below.
-  const closeModal = () => {
-    overlay.remove();
-    document.removeEventListener('keydown', escHandler);
-  };
-  const escHandler = (e) => { if (e.key === 'Escape') closeModal(); };
-  document.addEventListener('keydown', escHandler);
-  overlay.onclick = (e) => { if (e.target === overlay) closeModal(); };
-
-  const modal = document.createElement('div');
-  modal.style.cssText =
-    'max-width:800px;width:100%;background:var(--navy2);' +
-    'border:1px solid var(--navy4);border-radius:8px;padding:28px 32px;' +
-    'max-height:calc(100vh - 120px);overflow-y:auto;';
-
-  const header = '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;">' +
-    '<div>' +
-      '<div style="font-family:var(--font-mono);font-size:11px;color:var(--teal);letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px;">Error Journal</div>' +
-      '<div style="font-size:20px;font-weight:600;color:var(--white);">' +
-        (data.total || 0) + ' total entr' + ((data.total === 1) ? 'y' : 'ies') +
-      '</div>' +
-      '<div style="font-family:var(--font-mono);font-size:11px;color:var(--gray2);margin-top:4px;">' +
-        escapeHtml(data.journal_path || '') +
-      '</div>' +
-    '</div>' +
-    '<button class="btn-icon" data-action="close">Close ✕</button>' +
-  '</div>';
-
-  let entriesHtml = '';
-  const entries = data.entries || [];
-  if (entries.length === 0) {
-    entriesHtml =
-      '<div style="padding:40px;text-align:center;color:var(--gray);font-family:var(--font-mono);font-size:13px;">' +
-      (data.message || 'No errors logged. All clear.') + '</div>';
-  } else {
-    // Most recent first
-    entries.slice().reverse().forEach(r => {
-      const kind = r.kind || 'unknown';
-      const isRecovered = kind.includes('recovered');
-      const isUserNote = kind === 'user_note';
-      const dotColor = isRecovered ? 'var(--green)' : (isUserNote ? 'var(--teal)' : 'var(--amber)');
-      const ts = (r.ts || '').slice(0,19).replace('T',' ');
-      const userInput = r.user_input || '';
-      const err = r.error || r.last_error || '';
-      const note = r.note || '';
-      entriesHtml +=
-        '<div style="padding:14px 16px;margin-bottom:10px;background:var(--navy3);border-radius:4px;border-left:3px solid ' + dotColor + ';">' +
-          '<div style="display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:11px;margin-bottom:6px;">' +
-            '<span style="color:var(--white);font-weight:600;">' + escapeHtml(kind) + '</span>' +
-            '<span style="color:var(--gray2);">' + escapeHtml(ts) + '</span>' +
-          '</div>' +
-          (userInput ? '<div style="font-size:12px;color:var(--gray);margin:4px 0;"><span style="color:var(--gray2);font-family:var(--font-mono);">input: </span>' + escapeHtml(userInput.slice(0,200)) + '</div>' : '') +
-          (err ? '<div style="font-size:12px;color:var(--gray);margin:4px 0;"><span style="color:var(--gray2);font-family:var(--font-mono);">error: </span>' + escapeHtml(String(err).slice(0,300)) + '</div>' : '') +
-          (note ? '<div style="font-size:12px;color:var(--teal);margin:4px 0;"><span style="color:var(--gray2);font-family:var(--font-mono);">note:  </span>' + escapeHtml(note.slice(0,300)) + '</div>' : '') +
-        '</div>';
-    });
-  }
-
-  modal.innerHTML = header + entriesHtml;
-  overlay.appendChild(modal);
-  document.body.appendChild(overlay);
-  const closeBtn = modal.querySelector('[data-action="close"]');
-  if (closeBtn) closeBtn.addEventListener('click', closeModal);
-}
-
-function renderDeliverableCard(data) {
-  const card = document.createElement('div');
-  card.className = 'deliverable-card';
-  const preview = (data.preview || '').split('\n').slice(0, 3).join('\n');
-  // Determine button label by file extension. .md gets a viewer; binary
-  // formats get a direct download (the endpoint serves them with proper
-  // Content-Disposition so the browser downloads rather than displays).
-  const fname = (data.filename || '').toLowerCase();
-  const isMarkdown = fname.endsWith('.md') || fname.endsWith('.txt');
-  const isBinary = /\.(xlsx|xlsm|xls|docx|doc|pptx|ppt|pdf|csv|zip|png|jpe?g)$/.test(fname);
-  let btnLabel, btnAttr;
-  if (isMarkdown) {
-    btnLabel = 'Open →';
-    btnAttr = 'target="_blank" rel="noopener"';
-  } else if (isBinary) {
-    btnLabel = 'Download ↓';
-    btnAttr = 'download="' + escapeHtml(data.filename || 'deliverable') + '"';
-  } else {
-    btnLabel = 'View →';
-    btnAttr = 'target="_blank" rel="noopener"';
-  }
-  card.innerHTML =
-    '<div class="dc-header">' +
-      '<div class="dc-icon">📄</div>' +
-      '<div class="dc-main">' +
-        '<div class="dc-filename">' + escapeHtml(data.filename) + '</div>' +
-        '<div class="dc-meta">' +
-          'Saved by <span class="dc-agent">' + escapeHtml(data.agent || 'Agent') + '</span>' +
-          ' | ' + formatBytes(data.bytes || 0) +
-          ' | <span class="dc-category">' + escapeHtml(data.category || '') + '</span>' +
-        '</div>' +
-      '</div>' +
-      '<a class="dc-view" href="' + escapeHtml(data.view_url) + '" ' + btnAttr + '>' + btnLabel + '</a>' +
-    '</div>' +
-    (preview ? '<div class="dc-preview">' + escapeHtml(preview) + '</div>' : '') +
-    '<div class="dc-path">' + escapeHtml(data.path || '') + '</div>';
-  chat.appendChild(card);
-  autoScroll();
-}
-
-function formatBytes(n) {
-  if (!n || n < 1024) return n + ' B';
-  if (n < 1024 * 1024) return (n / 1024).toFixed(1) + ' KB';
-  return (n / 1024 / 1024).toFixed(1) + ' MB';
-}
-
-function appendMessage(kind, label, content) {
-  const el = document.createElement('div');
-  el.className = 'msg ' + kind;
-  el.innerHTML = '<div class="msg-label">' + escapeHtml(label) + '</div>' +
-                 '<div class="msg-content">' + escapeHtml(content) + '</div>';
-  chat.appendChild(el);
-  autoScroll();
-  return el;
-}
-
-function appendSystem(text) {
-  const el = document.createElement('div');
-  el.className = 'msg system';
-  el.textContent = text;
-  chat.appendChild(el);
-  autoScroll();
-}
-
-function appendThinking(text) {
-  const el = document.createElement('div');
-  el.className = 'thinking';
-  el.innerHTML = '<div class="pulse"></div><span>' + escapeHtml(text) + '</span>';
-  chat.appendChild(el);
-  autoScroll();
-  return el;
-}
-
-function autoScroll() {
-  chat.scrollTop = chat.scrollHeight;
-}
-
-async function clearChat() {
-  if (!confirm('Clear all conversation history?')) return;
-  try {
-    await fetch('/api/history', {method: 'DELETE'});
-    chat.innerHTML = '';
-    chat.appendChild(welcome);
-    welcome.style.display = 'block';
-    loadStatus();
-  } catch (e) { console.error(e); }
-}
-
-function escapeHtml(s) {
-  if (s == null) return '';
-  return String(s)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
-}
-
-// ═══════════════════════════════════════════════════════════════════════════════
-//  @MENTION AUTOCOMPLETE
-// ═══════════════════════════════════════════════════════════════════════════════
-// Session 28 — Priority 3 (P3). Defer-anchor since session 22.
-//
-// Triggers when the user types @ at the start of the textarea or
-// after whitespace. Excludes email-shaped tokens (alice@bob.com)
-// because the @ in those cases is preceded by a non-whitespace char,
-// so getMentionContext() returns trigger:false. See decision 4 in
-// the session-28 close doc for the full case table.
-//
-// Selecting a file inserts its FULL PATH (decision 1; SharePoint
-// forward-compat) plus a trailing space, replacing the @<query>
-// token in place. The mention is purely cosmetic — agents already
-// see all ingested files via _build_file_context() on every chat
-// turn, so this changes only what the user sees in the textarea.
-//
-// Keyboard:
-//   ArrowDown/ArrowUp : move active row (wraps at edges)
-//   Enter / Tab       : insert active row, close
-//   Escape            : close without inserting
-// Mouse:
-//   click             : insert that row, close
-// Auto-close:
-//   click outside the textarea/dropdown
-//   blur on textarea (with a 150ms grace so click-to-select works)
-//   message sent
-
-// Returns { trigger, query, start } based on the textarea's value
-// and caret position. trigger is true only if there is an @
-// somewhere between the caret and either the start of the input or
-// a whitespace character — i.e. the caret sits inside a contiguous
-// non-whitespace run that begins with @, AND that @ is itself at
-// position 0 or preceded by whitespace.
-function getMentionContext() {
-  const text  = input.value;
-  const caret = input.selectionStart;
-  // Walk backwards from the caret looking for the @ that starts the
-  // current token. Bail if we hit whitespace first (caret is not
-  // inside a mention) or if we find an @ whose preceding char is a
-  // non-whitespace character (email-shaped — ignore).
-  for (let i = caret - 1; i >= 0; i--) {
-    const ch = text[i];
-    if (ch === '@') {
-      const prev = i === 0 ? '' : text[i - 1];
-      if (i === 0 || /\s/.test(prev)) {
-        return { trigger: true, query: text.slice(i + 1, caret), start: i };
-      }
-      return { trigger: false };
-    }
-    if (/\s/.test(ch)) return { trigger: false };
-  }
-  return { trigger: false };
-}
-
-// Filter FILES_CACHE by the current query. Substring match against
-// name, case-insensitive. Sort: prefix matches first (stable
-// ordering within), then non-prefix substring matches by name asc.
-// Cap at 8 results — same as the right-rail panel; longer lists are
-// hard to scan and the user can refine with more characters.
-function filterFiles(query) {
-  if (!FILES_CACHE.length) return [];
-  if (!query) return FILES_CACHE.slice(0, 8);
-  const q = query.toLowerCase();
-  const prefix = [];
-  const contains = [];
-  for (const f of FILES_CACHE) {
-    const n = (f.name || '').toLowerCase();
-    if (n.startsWith(q)) prefix.push(f);
-    else if (n.includes(q)) contains.push(f);
-  }
-  prefix.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
-  contains.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
-  return prefix.concat(contains).slice(0, 8);
-}
-
-// Render the dropdown from MENTION_ITEMS + MENTION_ACTIVE. Empty
-// state shows a muted hint instead of an empty dropdown so the
-// user sees the trigger registered. Click handlers are bound by
-// row index (closure-captured) rather than via event delegation —
-// the list is short and the indirection isn't worth it here.
-function renderMentionList() {
-  if (!MENTION_ITEMS.length) {
-    mentionList.innerHTML =
-      '<div class="mention-empty">no files — drop one or /ingest first</div>';
-    return;
-  }
-  mentionList.innerHTML = '';
-  MENTION_ITEMS.forEach((f, idx) => {
-    const row = document.createElement('div');
-    row.className = 'mention-item' + (idx === MENTION_ACTIVE ? ' active' : '');
-    row.innerHTML =
-      '<span class="mention-icon">' + (f.icon || '📄') + '</span>' +
-      '<span class="mention-text">' +
-        '<span class="mention-name">' + escapeHtml(f.name || '') + '</span>' +
-        '<span class="mention-path">' + escapeHtml(f.path || '') + '</span>' +
-      '</span>';
-    // mousedown rather than click so the textarea's blur (which
-    // would close the dropdown) doesn't fire before the selection
-    // registers. mousedown's preventDefault keeps focus in the
-    // textarea so the cursor stays put after the insert.
-    row.addEventListener('mousedown', (e) => {
-      e.preventDefault();
-      selectMention(idx);
-    });
-    mentionList.appendChild(row);
-  });
-}
-
-// Open or refresh the dropdown for the given query. Keeps
-// MENTION_ACTIVE on the first row whenever items are present;
-// resets to -1 on empty state (no row is selectable).
-function openMentionList(query) {
-  MENTION_ITEMS = filterFiles(query);
-  MENTION_ACTIVE = MENTION_ITEMS.length ? 0 : -1;
-  MENTION_OPEN = true;
-  mentionList.hidden = false;
-  renderMentionList();
-}
-
-function closeMentionList() {
-  MENTION_OPEN     = false;
-  MENTION_ITEMS    = [];
-  MENTION_ACTIVE   = -1;
-  MENTION_TOKEN_AT = -1;
-  mentionList.hidden = true;
-  mentionList.innerHTML = '';
-}
-
-// Called from textarea oninput. Decides whether to open, refresh,
-// or close based on the current caret context.
-function updateMentionFromInput() {
-  const ctx = getMentionContext();
-  if (!ctx.trigger) {
-    if (MENTION_OPEN) closeMentionList();
-    return;
-  }
-  MENTION_TOKEN_AT = ctx.start;
-  openMentionList(ctx.query);
-}
-
-// Replace the @<query> stretch with the file's full path plus a
-// single trailing space. Caret lands right after the inserted space
-// so the user can keep typing. Closes the dropdown.
-function selectMention(idx) {
-  if (idx < 0 || idx >= MENTION_ITEMS.length) {
-    closeMentionList();
-    return;
-  }
-  const f = MENTION_ITEMS[idx];
-  const insert = (f.path || f.name || '') + ' ';
-  const text  = input.value;
-  const caret = input.selectionStart;
-  // MENTION_TOKEN_AT points at the @; replace from there through
-  // the current caret position with the chosen path. This handles
-  // the case where the user typed @qu and is mid-word.
-  const before = text.slice(0, MENTION_TOKEN_AT);
-  const after  = text.slice(caret);
-  const newText = before + '@' + insert + after;
-  input.value = newText;
-  const newCaret = (before + '@' + insert).length;
-  input.setSelectionRange(newCaret, newCaret);
-  autoResize(input);
-  closeMentionList();
-  input.focus();
-}
-
-// Move the active-row index by delta (+1 down, -1 up). Wraps. No-op
-// on empty state. Re-renders to update the .active class.
-function moveMentionActive(delta) {
-  if (!MENTION_ITEMS.length) return;
-  const n = MENTION_ITEMS.length;
-  MENTION_ACTIVE = ((MENTION_ACTIVE + delta) % n + n) % n;
-  renderMentionList();
-  // Scroll the active row into view if the dropdown overflows.
-  const activeEl = mentionList.children[MENTION_ACTIVE];
-  if (activeEl && activeEl.scrollIntoView) {
-    activeEl.scrollIntoView({ block: 'nearest' });
-  }
-}
-
-// Click-outside handler: close the dropdown if the click landed
-// neither in the textarea nor inside the dropdown itself. Bound
-// once at script load.
-document.addEventListener('mousedown', (e) => {
-  if (!MENTION_OPEN) return;
-  if (input.contains(e.target) || mentionList.contains(e.target)) return;
-  closeMentionList();
-});
-
-// Blur handler: close on a short delay so a click-to-select on a
-// dropdown row (which fires blur first, then mousedown) still
-// works. The mousedown handler above runs synchronously before
-// this timeout resolves.
-input.addEventListener('blur', () => {
-  setTimeout(() => {
-    if (MENTION_OPEN && document.activeElement !== input) closeMentionList();
-  }, 150);
-});
-
-// ═══════════════════════════════════════════════════════════════════════════════
-//  FILE UPLOAD — drag-and-drop and paperclip click
-// ═══════════════════════════════════════════════════════════════════════════════
-// Session 24 — Priority 1(a) from the session-23 handoff. /api/upload
-// already exists server-side and accepts multipart/form-data; this is
-// the frontend that drives it. Two routes share one uploadFiles()
-// handler:
-//   - paperclip (.attach-btn) → hidden <input type=file>.click() → change
-//   - drop anywhere on the window → document.drop → uploadFiles
-// Both feed FormData uploads sequentially so we can render one Tavern
-// bubble per file (matches /ingest's per-file UX) and refresh the
-// files panel once at the end.
-
-const SUPPORTED_EXT_CLIENT = new Set([
-  '.txt', '.md', '.pdf', '.docx', '.xlsx', '.pptx', '.msg', '.eml'
-]);
-
-let DRAG_DEPTH = 0;  // counts dragenter/dragleave so child-element transitions
-                     // (which fire dragleave on the parent) don't flicker the
-                     // overlay off prematurely.
-
-document.addEventListener('dragenter', (e) => {
-  // Only react to actual file drags. The 'Files' type is set by the OS
-  // file drag; in-page text/element drags don't include it, so this
-  // skips them and lets normal drag behavior continue.
-  if (!e.dataTransfer || !e.dataTransfer.types || !e.dataTransfer.types.includes('Files')) return;
-  DRAG_DEPTH++;
-  document.getElementById('drop-overlay').classList.add('active');
-  e.preventDefault();
-});
-
-document.addEventListener('dragover', (e) => {
-  if (!e.dataTransfer || !e.dataTransfer.types || !e.dataTransfer.types.includes('Files')) return;
-  e.preventDefault();  // required for the subsequent drop event to fire
-});
-
-document.addEventListener('dragleave', (e) => {
-  if (!e.dataTransfer || !e.dataTransfer.types || !e.dataTransfer.types.includes('Files')) return;
-  DRAG_DEPTH = Math.max(0, DRAG_DEPTH - 1);
-  if (DRAG_DEPTH === 0) document.getElementById('drop-overlay').classList.remove('active');
-});
-
-document.addEventListener('drop', (e) => {
-  if (!e.dataTransfer || !e.dataTransfer.files || e.dataTransfer.files.length === 0) return;
-  e.preventDefault();
-  DRAG_DEPTH = 0;
-  document.getElementById('drop-overlay').classList.remove('active');
-  uploadFiles(e.dataTransfer.files);
-});
-
-async function uploadFiles(fileList) {
-  // Sequential — one bubble per file in chat order. Could parallelize
-  // but server-side _ingest_bytes writes to a temp dir keyed by
-  // filename, so concurrent uploads of same-named files would collide.
-  // Sequential is also gentler on the SQLite write path.
-  const files = Array.from(fileList);
-  for (const file of files) {
-    await uploadOne(file);
-  }
-  await loadFiles();  // refresh the right-rail files panel once at end
-}
-
-async function uploadOne(file) {
-  // Pre-validate extension client-side for instant feedback on obvious
-  // misses (.exe, folders dragged-as-files, etc.). Server still validates
-  // — this is just to avoid a round-trip when we already know the answer.
-  const dot = file.name.lastIndexOf('.');
-  const ext = dot >= 0 ? file.name.slice(dot).toLowerCase() : '';
-  if (!SUPPORTED_EXT_CLIENT.has(ext)) {
-    appendUploadError(file.name,
-      'Unsupported file type: ' + (ext || '(none)') +
-      '. Supported: ' + Array.from(SUPPORTED_EXT_CLIENT).sort().join(', '));
-    return;
-  }
-
-  // Show the Tavern bubble immediately so the user sees something happen
-  // for large files (xlsx/pdf parsing can take a few seconds). Same agent
-  // label as the /ingest slash command for visual parity in chat history.
-  const bubble    = appendMessage('assistant', 'Tavern', '');
-  const contentEl = bubble.querySelector('.msg-content');
-  contentEl.innerHTML = '<em style="color:var(--gray2)">Ingesting <code>' +
-                        escapeHtml(file.name) + '</code>…</em>';
-
-  try {
-    const fd = new FormData();
-    fd.append('file', file);
-    const r = await fetch('/api/upload', { method: 'POST', body: fd });
-    let data;
-    try { data = await r.json(); }
-    catch (_) { data = { error: 'HTTP ' + r.status + ' ' + r.statusText }; }
-
-    if (!r.ok || data.error) {
-      contentEl.innerHTML = renderMarkdown(
-        '**Ingest failed:** `' + (file.name) + '`\n\n' +
-        (data.error || ('HTTP ' + r.status))
-      );
-      contentEl.style.color = 'var(--amber)';
-      return;
-    }
-
-    // Build the same markdown shape _stream_ingest_command produces
-    // server-side, so drag-and-drop bubbles look identical to /ingest
-    // bubbles in chat history.
-    const f = data.file || {};
-    const lines = [
-      '**Ingested:** `' + (f.name || file.name) + '`',
-      '',
-      '- Type: `' + (f.type || ext) + '`',
-      '- Words: ' + (f.word_count || 0),
-    ];
-    if (f.page_count) lines.push('- Pages: ' + f.page_count);
-    const preview = (f.preview || '').trim();
-    if (preview) {
-      lines.push('');
-      lines.push('Preview:');
-      lines.push('');
-      lines.push(preview);
-    }
-    contentEl.innerHTML = renderMarkdown(lines.join('\n'));
-  } catch (e) {
-    console.error('Upload failed:', e);
-    contentEl.innerHTML = renderMarkdown(
-      '**Ingest failed:** `' + file.name + '`\n\n' + String(e)
-    );
-    contentEl.style.color = 'var(--amber)';
-  }
-}
-
-function appendUploadError(filename, msg) {
-  // Client-side rejection (extension check etc) — same Tavern bubble
-  // shape as the success path, just with the error styled in amber.
-  const bubble    = appendMessage('assistant', 'Tavern', '');
-  const contentEl = bubble.querySelector('.msg-content');
-  contentEl.innerHTML = renderMarkdown(
-    '**Ingest failed:** `' + filename + '`\n\n' + msg
-  );
-  contentEl.style.color = 'var(--amber)';
-}
-
-// Render Markdown to HTML. Options are configured once at init (see top of
-// script). If marked.js is unavailable (offline CDN), fall back to escaped
-// plain text so the UI still works.
-function renderMarkdown(text) {
-  if (typeof marked === 'undefined') return escapeHtml(text).replace(/\n/g, '<br>');
-  try {
-    return marked.parse(text);
-  } catch (e) {
-    console.error('Markdown parse error:', e);
-    return escapeHtml(text).replace(/\n/g, '<br>');
-  }
-}
-</script>
 
 </body>
 </html>
