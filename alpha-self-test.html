@@ -115,8 +115,60 @@ body::before {
 }
 .crumb a:hover { color: var(--teal); border-color: var(--teal); }
 
+/* Anchor nav (right rail, fixed; hidden below 1180px) */
+.anchor-nav {
+  position: fixed;
+  top: 120px;
+  left: calc(50% + 420px);
+  width: 180px;
+  max-height: calc(100vh - 160px);
+  overflow-y: auto;
+  z-index: 5;
+  padding-left: 18px;
+  border-left: 1px solid var(--rule);
+}
+.anchor-nav-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--dim);
+  font-weight: 500;
+  margin-bottom: 14px;
+  display: block;
+}
+.anchor-nav ol { list-style: none; }
+.anchor-nav li { margin-bottom: 6px; }
+.anchor-nav a {
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--dim);
+  text-decoration: none;
+  display: block;
+  padding: 3px 0 3px 12px;
+  margin-left: -14px;
+  border-left: 2px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.anchor-nav a:hover { color: var(--navy); }
+.anchor-nav a.active {
+  color: var(--navy);
+  border-left-color: var(--teal);
+  font-weight: 500;
+}
+.anchor-nav .num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--teal);
+  letter-spacing: 0.04em;
+  margin-right: 6px;
+}
+@media (max-width: 1180px) {
+  .anchor-nav { display: none; }
+}
+
 /* Hero */
-.hero { margin-bottom: 52px; }
+.hero { margin-bottom: 36px; }
 .kicker {
   font-size: 13px;
   font-weight: 500;
@@ -148,7 +200,90 @@ body::before {
 }
 .hero p.sub { font-size: 15px; color: var(--dim); }
 
-/* Callouts */
+/* Cheat-sheet — the 5 checks compressed for fast scan/print */
+.cheatsheet {
+  background: var(--navy);
+  color: var(--paper);
+  padding: 30px 34px;
+  margin: 0 0 56px;
+  border-radius: 4px;
+  scroll-margin-top: 24px;
+}
+.cheatsheet-eyebrow {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--teal-soft);
+  margin-bottom: 12px;
+  display: block;
+}
+.cheatsheet h3 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  font-variation-settings: "opsz" 96, "SOFT" 30;
+  font-size: 24px;
+  color: var(--paper);
+  letter-spacing: -0.01em;
+  margin-bottom: 22px;
+  line-height: 1.15;
+}
+.cs-rows { display: grid; gap: 1px; background: rgba(250, 250, 247, 0.1); }
+.cs-row {
+  display: grid;
+  grid-template-columns: 50px 130px 1fr;
+  gap: 14px;
+  padding: 12px 0;
+  background: var(--navy);
+  align-items: baseline;
+}
+.cs-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--teal-soft);
+  text-align: right;
+}
+.cs-name {
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--paper);
+}
+.cs-action {
+  font-size: 14px;
+  color: rgba(250, 250, 247, 0.85);
+  line-height: 1.5;
+}
+.cs-action code {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12.5px;
+  background: rgba(250, 250, 247, 0.08);
+  padding: 1px 7px;
+  border-radius: 2px;
+  color: var(--paper);
+}
+.cs-foot {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(250, 250, 247, 0.18);
+  font-size: 13px;
+  color: rgba(250, 250, 247, 0.7);
+  line-height: 1.55;
+}
+.cs-foot a {
+  color: var(--code-teal);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(94, 234, 212, 0.4);
+}
+@media (max-width: 560px) {
+  .cs-row { grid-template-columns: 36px 1fr; gap: 6px 12px; }
+  .cs-name { grid-column: 2; }
+  .cs-action { grid-column: 2; font-size: 13.5px; }
+}
+
+/* Callouts (warn / ok / fail) */
 .callout {
   background: var(--warn-bg);
   border-left: 3px solid var(--warn-rule);
@@ -164,14 +299,8 @@ body::before {
   margin-bottom: 4px;
   letter-spacing: 0.03em;
 }
-.callout.ok {
-  background: var(--ok-bg);
-  border-left-color: var(--ok-rule);
-}
-.callout.fail {
-  background: var(--fail-bg);
-  border-left-color: var(--fail-rule);
-}
+.callout.ok { background: var(--ok-bg); border-left-color: var(--ok-rule); }
+.callout.fail { background: var(--fail-bg); border-left-color: var(--fail-rule); }
 
 /* Section heading (with step-num for sequential checks) */
 h2.section {
@@ -187,6 +316,7 @@ h2.section {
   display: flex;
   align-items: baseline;
   gap: 16px;
+  scroll-margin-top: 24px;
 }
 h2.section .step-num {
   font-family: 'IBM Plex Mono', monospace;
@@ -307,7 +437,7 @@ code.inline {
   color: var(--navy);
 }
 
-/* Expected-result block — the green "this is what should happen" panel */
+/* Expected-result block */
 .expected {
   background: var(--ok-bg);
   border-left: 3px solid var(--ok-rule);
@@ -337,7 +467,7 @@ code.inline {
 }
 
 /* Inline links in body */
-p.body a, ul.body li a {
+p.body a, ul.body li a, ol.body li a {
   color: var(--teal);
   text-decoration: none;
   border-bottom: 1px solid currentColor;
@@ -365,12 +495,100 @@ p.body a, ul.body li a {
 @media (max-width: 560px) {
   .stage { padding: 40px 22px 64px; }
   .foot { flex-direction: column; gap: 8px; align-items: flex-start; }
+  .cheatsheet { padding: 24px 22px; }
 }
 
 ::selection { background: var(--teal); color: var(--paper); }
+
+/* ============================================================ PRINT
+   Self-test prints best as a fillable checklist: cheat-sheet up front,
+   each check on a page that won't break mid-procedure, expected/fail
+   blocks readable in ink, links resolve to URLs in parens. */
+@media print {
+  body { background: white; color: black; }
+  body::before, .anchor-nav, .copy-btn, .foot, .topbar { display: none !important; }
+  .stage { padding: 12px 0; max-width: 100%; }
+
+  h1, h2, h2.section, .hero h1, .cheatsheet h3 {
+    color: black !important;
+    page-break-after: avoid;
+  }
+  .hero h1 em, em, .kicker, h2.section .step-num { color: #444 !important; }
+
+  .cheatsheet {
+    background: white !important;
+    color: black !important;
+    border: 2px solid black;
+    border-radius: 0;
+    padding: 20px 24px;
+    margin-bottom: 32px;
+    page-break-after: always;
+  }
+  .cheatsheet-eyebrow, .cs-num { color: #555 !important; }
+  .cs-name, .cs-action { color: black !important; }
+  .cs-action code {
+    background: #eee !important;
+    color: black !important;
+  }
+  .cs-foot { color: #444 !important; border-top-color: #ccc !important; }
+  .cs-foot a { color: black !important; border-bottom: none !important; }
+  .cs-rows { background: transparent !important; }
+  .cs-row { background: white !important; border-bottom: 1px solid #ccc; }
+
+  .code {
+    background: #f5f5f5 !important;
+    color: black !important;
+    border: 1px solid #ccc;
+    page-break-inside: avoid;
+  }
+  .code .os {
+    background: transparent !important;
+    color: #666 !important;
+    border-color: #999 !important;
+  }
+
+  .callout, .callout.ok, .callout.fail, .expected {
+    background: white !important;
+    border-left: 3px solid black !important;
+    page-break-inside: avoid;
+  }
+  .expected::before { color: black !important; }
+
+  /* Each check should ideally fit on its own paper section */
+  h2.section { page-break-before: auto; page-break-after: avoid; }
+  h2.section .step-num + * { page-break-after: avoid; }
+
+  a { color: black !important; }
+  p.body a[href^="http"]::after,
+  p.body a[href^="mailto"]::after,
+  ul.body li a[href^="http"]::after,
+  ul.body li a[href^="mailto"]::after,
+  ol.body li a[href^="http"]::after,
+  ol.body li a[href^="mailto"]::after {
+    content: ' (' attr(href) ')';
+    font-size: 0.85em;
+    color: #555;
+  }
+}
 </style>
 </head>
 <body>
+
+<!-- Right-rail anchor nav (desktop only; hidden < 1180px) -->
+<nav class="anchor-nav" aria-label="On this page">
+  <span class="anchor-nav-label">On this page</span>
+  <ol>
+    <li><a href="#cheatsheet">Cheat sheet</a></li>
+    <li><a href="#before">Before you start</a></li>
+    <li><a href="#check-1"><span class="num">01</span>CLI ingest</a></li>
+    <li><a href="#check-2"><span class="num">02</span>Web /ingest</a></li>
+    <li><a href="#check-3"><span class="num">03</span>Paperclip</a></li>
+    <li><a href="#check-4"><span class="num">04</span>Drag-and-drop</a></li>
+    <li><a href="#check-5"><span class="num">05</span>Ask Rebecca</a></li>
+    <li><a href="#troubleshooting">Troubleshooting</a></li>
+    <li><a href="#done">Done</a></li>
+  </ol>
+</nav>
 
 <div class="stage">
 
@@ -390,7 +608,44 @@ p.body a, ul.body li a {
     </p>
   </div>
 
-  <h2 class="section">Before you start</h2>
+  <!-- ============================================================ CHEAT SHEET -->
+  <section class="cheatsheet" id="cheatsheet" aria-labelledby="cs-h">
+    <span class="cheatsheet-eyebrow">The five checks · 5 minutes</span>
+    <h3 id="cs-h">Run, eye-check, mark.</h3>
+    <div class="cs-rows">
+      <div class="cs-row">
+        <div class="cs-num">01</div>
+        <div class="cs-name">CLI ingest</div>
+        <div class="cs-action">Run <code>norm</code> · then <code>/ingest &lt;path-to-docx&gt;</code></div>
+      </div>
+      <div class="cs-row">
+        <div class="cs-num">02</div>
+        <div class="cs-name">Web /ingest</div>
+        <div class="cs-action">Run <code>norm --web</code> · type <code>/ingest &lt;path&gt;</code> in chat</div>
+      </div>
+      <div class="cs-row">
+        <div class="cs-num">03</div>
+        <div class="cs-name">Paperclip</div>
+        <div class="cs-action">Click 📎 in input row · pick same file</div>
+      </div>
+      <div class="cs-row">
+        <div class="cs-num">04</div>
+        <div class="cs-name">Drag-and-drop</div>
+        <div class="cs-action">Drag same file onto chat window · teal overlay confirms</div>
+      </div>
+      <div class="cs-row">
+        <div class="cs-num">05</div>
+        <div class="cs-name">Ask Rebecca</div>
+        <div class="cs-action">Pick Rebecca-Deck · send <code>build me a board deck for Q1</code></div>
+      </div>
+    </div>
+    <div class="cs-foot">
+      Anything fails? Stop and read <a href="#troubleshooting">Troubleshooting</a> before continuing — later checks may fail for the same reason.
+    </div>
+  </section>
+
+  <!-- ============================================================ BEFORE -->
+  <h2 class="section" id="before">Before you start</h2>
   <p class="body">You need:</p>
   <ul class="body">
     <li>A working <code class="inline">norm</code> install. See the <a href="access.html">early-access page</a> if you haven't installed yet.</li>
@@ -400,11 +655,11 @@ p.body a, ul.body li a {
   </ul>
 
   <p class="body sub" style="margin-top: 20px;">
-    Run the five checks in order. If a check fails, stop and consult <em>Troubleshooting</em> at the bottom before continuing — later checks may fail for the same reason and aren't worth running until the first one is sorted.
+    Run the five checks in order. If a check fails, stop and consult <a href="#troubleshooting">Troubleshooting</a> at the bottom before continuing — later checks may fail for the same reason and aren't worth running until the first one is sorted.
   </p>
 
-  <!-- CHECK 1 -->
-  <h2 class="section"><span class="step-num">01</span> CLI ingest</h2>
+  <!-- ============================================================ CHECK 1 -->
+  <h2 class="section" id="check-1"><span class="step-num">01</span> CLI ingest</h2>
   <p class="body">In a terminal:</p>
   <ol class="body">
     <li>Run <code class="inline">norm</code>.</li>
@@ -418,10 +673,10 @@ p.body a, ul.body li a {
     A bordered <strong>WORD INDEXED</strong> card appears, listing paragraph count, table count, word count, and a structure tree. No red error text or Python traceback.
   </div>
 
-  <p class="mark-line">Mark <strong>PASS</strong> or <strong>FAIL</strong>. If FAIL, see Troubleshooting → CLI failures.</p>
+  <p class="mark-line">Mark <strong>PASS</strong> or <strong>FAIL</strong>. If FAIL, see <a href="#troubleshooting">Troubleshooting → CLI failures</a>.</p>
 
-  <!-- CHECK 2 -->
-  <h2 class="section"><span class="step-num">02</span> Web /ingest</h2>
+  <!-- ============================================================ CHECK 2 -->
+  <h2 class="section" id="check-2"><span class="step-num">02</span> Web /ingest</h2>
   <p class="body">
     Exit the CLI (Ctrl-C on Windows, Cmd-C or Ctrl-C on macOS). In a fresh terminal window, run:
   </p>
@@ -436,10 +691,10 @@ p.body a, ul.body li a {
     A "Tavern" message bubble appears with an <code class="inline">**Ingested:**</code> summary, including file type, word count, and a preview of the content. The file should also appear in the right-rail Files panel.
   </div>
 
-  <p class="mark-line">Mark <strong>PASS</strong> or <strong>FAIL</strong>. If FAIL, see Troubleshooting → Web ingest failures.</p>
+  <p class="mark-line">Mark <strong>PASS</strong> or <strong>FAIL</strong>. If FAIL, see <a href="#troubleshooting">Troubleshooting → Web ingest failures</a>.</p>
 
-  <!-- CHECK 3 -->
-  <h2 class="section"><span class="step-num">03</span> Paperclip upload</h2>
+  <!-- ============================================================ CHECK 3 -->
+  <h2 class="section" id="check-3"><span class="step-num">03</span> Paperclip upload</h2>
   <p class="body">In the same browser tab:</p>
   <ol class="body">
     <li>Click the 📎 icon in the chat input row.</li>
@@ -450,10 +705,10 @@ p.body a, ul.body li a {
     A Tavern bubble appears matching the shape of Check 02. The file should <strong>not</strong> appear twice in the Files panel — it's the same file.
   </div>
 
-  <p class="mark-line">Mark <strong>PASS</strong> or <strong>FAIL</strong>. If FAIL, see Troubleshooting → Web ingest failures.</p>
+  <p class="mark-line">Mark <strong>PASS</strong> or <strong>FAIL</strong>. If FAIL, see <a href="#troubleshooting">Troubleshooting → Web ingest failures</a>.</p>
 
-  <!-- CHECK 4 -->
-  <h2 class="section"><span class="step-num">04</span> Drag-and-drop</h2>
+  <!-- ============================================================ CHECK 4 -->
+  <h2 class="section" id="check-4"><span class="step-num">04</span> Drag-and-drop</h2>
   <ol class="body">
     <li>From your file manager (File Explorer on Windows, Finder on macOS), drag the same docx onto the chat window.</li>
   </ol>
@@ -462,10 +717,10 @@ p.body a, ul.body li a {
     As you drag onto the window, a teal-bordered overlay fades in saying "Drop file to ingest." Releasing your mouse closes the overlay and produces another Tavern bubble.
   </div>
 
-  <p class="mark-line">Mark <strong>PASS</strong> or <strong>FAIL</strong>. If FAIL, see Troubleshooting → Web ingest failures.</p>
+  <p class="mark-line">Mark <strong>PASS</strong> or <strong>FAIL</strong>. If FAIL, see <a href="#troubleshooting">Troubleshooting → Web ingest failures</a>.</p>
 
-  <!-- CHECK 5 -->
-  <h2 class="section"><span class="step-num">05</span> Ask Rebecca</h2>
+  <!-- ============================================================ CHECK 5 -->
+  <h2 class="section" id="check-5"><span class="step-num">05</span> Ask Rebecca</h2>
   <p class="body">This confirms the agent layer works, not just ingestion.</p>
   <ol class="body">
     <li>From the agent dropdown at the top of the chat, select <strong>Rebecca-Deck</strong>.</li>
@@ -481,10 +736,10 @@ p.body a, ul.body li a {
     If Rebecca produces a deck full of <code class="inline">TBD</code> placeholders without asking — or fabricates numbers without sourcing them — something is wrong with skill loading.
   </div>
 
-  <p class="mark-line">Mark <strong>PASS</strong> or <strong>FAIL</strong>. If FAIL, see Troubleshooting → Agent failures.</p>
+  <p class="mark-line">Mark <strong>PASS</strong> or <strong>FAIL</strong>. If FAIL, see <a href="#troubleshooting">Troubleshooting → Agent failures</a>.</p>
 
-  <!-- TROUBLESHOOTING -->
-  <h2 class="section">Troubleshooting</h2>
+  <!-- ============================================================ TROUBLESHOOTING -->
+  <h2 class="section" id="troubleshooting">Troubleshooting</h2>
 
   <p class="body" style="margin-top: 8px;"><strong>CLI failures</strong></p>
   <ul class="body">
@@ -521,7 +776,8 @@ p.body a, ul.body li a {
     If the symptom doesn't match the above, email <a href="mailto:support@tavernos.ai">support@tavernos.ai</a> with what you tried, what you expected, and what you saw. Don't worry about whether it's "really a bug" — surfacing the symptom is the alpha's job.
   </p>
 
-  <h2 class="section">All five passed?</h2>
+  <!-- ============================================================ DONE -->
+  <h2 class="section" id="done">All five passed?</h2>
   <div class="callout ok">
     <strong>You're set.</strong>
     Continue with the rest of the alpha — see the <a href="alpha-guide.html" style="color: var(--teal);">tester guide</a> for what to test next.
@@ -557,6 +813,36 @@ function copyCode(btn) {
     setTimeout(() => { btn.textContent = 'Copy'; }, 1400);
   });
 }
+
+/* Anchor-nav active-section highlighting via IntersectionObserver.
+   The rootMargin biases the "active" zone toward the upper third of the
+   viewport so headings near the top win when multiple sections show. */
+(function () {
+  const navLinks = document.querySelectorAll('.anchor-nav a');
+  if (!navLinks.length) return;
+
+  const targets = [];
+  navLinks.forEach(a => {
+    const id = a.getAttribute('href').slice(1);
+    const el = document.getElementById(id);
+    if (el) targets.push(el);
+  });
+
+  const setActive = (id) => {
+    navLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+    });
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    const visible = entries.filter(e => e.isIntersecting);
+    if (!visible.length) return;
+    visible.sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+    setActive(visible[0].target.id);
+  }, { rootMargin: '-15% 0px -70% 0px', threshold: 0 });
+
+  targets.forEach(t => observer.observe(t));
+})();
 </script>
 
 </body>
