@@ -6,6 +6,21 @@
 <meta name="description" content="TavernOS — an AI workstation that does the work, not just talks about it. Ten specialists installed on your laptop. Real deliverables, not chat transcripts.">
 <title>TavernOS</title>
 
+<!-- Favicons -->
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Open Graph / Twitter -->
+<meta property="og:title" content="TavernOS — Ten specialists who do the work">
+<meta property="og:description" content="Real Word docs, slide decks, Excel models. Not chat transcripts.">
+<meta property="og:image" content="https://tavernos.ai/og.png">
+<meta property="og:url" content="https://tavernos.ai">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://tavernos.ai/og.png">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -87,6 +102,23 @@ body::before {
   text-transform: uppercase;
   color: var(--dim);
   font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.crumb::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--teal);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.4; }
 }
 
 /* Hero */
@@ -329,7 +361,7 @@ ul.body li strong {
   background: transparent;
   border: 1px solid rgba(250, 250, 247, 0.3);
   padding: 10px 18px;
-  border-radius: 3px;
+  border-radius: 2px;
   text-decoration: none;
   transition: all 0.2s ease;
   display: inline-block;
@@ -377,7 +409,7 @@ ul.body li strong {
 <div class="stage">
 
   <div class="topbar">
-    <a href="/" class="wordmark">Tavern<span class="dot">OS</span></a>
+    <a href="/" class="wordmark">TavernOS<span class="dot">.</span></a>
     <span class="crumb">Closed alpha</span>
   </div>
 
@@ -410,7 +442,7 @@ ul.body li strong {
   <p class="body">Sarah is the COO of a 40-person company. Imagine yours. She spends 4&ndash;6 hours every month building the leadership team's monthly business review &mdash; pulling numbers from the CRM, finance, and support tool; making the charts; writing the narrative; formatting it for the meeting.</p>
 
   <div class="practice">
-    <div class="practice-label">First run with TavernOS</div>
+    <div class="practice-label">An imagined first run</div>
     <p>Cliff pulled the source data. Rebecca built the charts and breakdown tables. Woody wrote the exec narrative. Carla grilled the draft. Sarah reviewed and approved in about 90 minutes &mdash; <strong>down from 4&ndash;6 hours.</strong></p>
     <p><strong>Three months later:</strong> the report ships the same Monday every month, reviewed in under 90 minutes. The system has learned Sarah's voice, her CEO's priorities, and which sections leadership actually reads &mdash; every cycle sharper than the last.</p>
   </div>
@@ -435,7 +467,7 @@ ul.body li strong {
     <dd><strong>Site live.</strong> tavernos.ai on Cloudflare, contact email working, the friend-installer page wired to a clean ZIP. The product was real before the page was.</dd>
 
     <dt>April 23</dt>
-    <dd><strong>A test framework that doesn't call the API.</strong> The kind of bug that used to take twelve agent runs to find now surfaces in two seconds. Runs on every change. About a hundred tests today.</dd>
+    <dd><strong>A test framework that doesn't call the API.</strong> The kind of bug that used to take twelve agent runs to find now surfaces in two seconds. Runs on every change. Three tiers: smoke, regression, format coverage.</dd>
 
     <dt>April 24</dt>
     <dd><strong>Invocation reliability fixed.</strong> Got the model to actually use its tools when it should. The same prompts that called the tool one time in four now call it more than four times in five.</dd>

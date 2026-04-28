@@ -7,6 +7,20 @@
 <meta name="description" content="TavernOS alpha self-test. Five-minute install verification. Unlisted.">
 <title>TavernOS · alpha self-test</title>
 
+<!-- Favicons -->
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<!-- Open Graph (private link previews — page is noindex but still gets shared) -->
+<meta property="og:title" content="TavernOS · five-minute self-test">
+<meta property="og:description" content="Run before your first session — confirms ingest, upload, and agent flows work on your machine.">
+<meta property="og:image" content="https://tavernos.ai/og.png">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://tavernos.ai/og.png">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..900,0..100,0..1;1,9..144,300..900,0..100,0..1&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -293,18 +307,6 @@ code.inline {
   color: var(--navy);
 }
 
-/* Operator placeholder */
-.operator {
-  display: inline-block;
-  background: rgba(230, 197, 101, 0.18);
-  border: 1px dashed rgba(230, 197, 101, 0.6);
-  color: #7a5d12;
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 12px;
-  padding: 1px 8px;
-  border-radius: 3px;
-}
-
 /* Expected-result block — the green "this is what should happen" panel */
 .expected {
   background: var(--ok-bg);
@@ -487,7 +489,7 @@ p.body a, ul.body li a {
   <p class="body" style="margin-top: 8px;"><strong>CLI failures</strong></p>
   <ul class="body">
     <li><code class="inline">python-docx not installed</code> (or any <code class="inline">ModuleNotFoundError</code>). Install issue, not a TavernOS bug. Reactivate your virtual environment and rerun <code class="inline">pip install -r requirements.txt</code> from the <code class="inline">tavernos-alpha</code> folder. If the error persists, email support.</li>
-    <li>Traceback ending in <code class="inline">AttributeError: 'NoneType' object has no attribute ...</code>. Known regression class. Email the full traceback to <a href="mailto:contact@tavernos.ai">contact@tavernos.ai</a>.</li>
+    <li>Traceback ending in <code class="inline">AttributeError: 'NoneType' object has no attribute ...</code>. Known regression class. Email the full traceback to <a href="mailto:support@tavernos.ai">support@tavernos.ai</a>.</li>
     <li><code class="inline">No such file or directory</code>. Your path is wrong. Use the full absolute path. If it contains spaces, wrap it in quotes:</li>
   </ul>
   <div class="code">
@@ -496,7 +498,7 @@ p.body a, ul.body li a {
 
   <p class="body" style="margin-top: 24px;"><strong>Web ingest failures</strong></p>
   <ul class="body">
-    <li><strong>HTTP 500 in the browser console.</strong> Server-side error. Switch to the terminal window where <code class="inline">norm --web</code> is running and copy the actual error text from there. Email it to <a href="mailto:contact@tavernos.ai">contact@tavernos.ai</a>.</li>
+    <li><strong>HTTP 500 in the browser console.</strong> Server-side error. Switch to the terminal window where <code class="inline">norm --web</code> is running and copy the actual error text from there. Email it to <a href="mailto:support@tavernos.ai">support@tavernos.ai</a>.</li>
     <li><strong>Drop overlay doesn't appear during drag.</strong> Browser-specific. Try a hard-refresh:</li>
   </ul>
   <div class="code">
@@ -516,7 +518,7 @@ p.body a, ul.body li a {
 
   <p class="body" style="margin-top: 24px;"><strong>Anything else</strong></p>
   <p class="body">
-    If the symptom doesn't match the above, email <a href="mailto:contact@tavernos.ai">contact@tavernos.ai</a> with what you tried, what you expected, and what you saw. Don't worry about whether it's "really a bug" — surfacing the symptom is the alpha's job.
+    If the symptom doesn't match the above, email <a href="mailto:support@tavernos.ai">support@tavernos.ai</a> with what you tried, what you expected, and what you saw. Don't worry about whether it's "really a bug" — surfacing the symptom is the alpha's job.
   </p>
 
   <h2 class="section">All five passed?</h2>
@@ -530,7 +532,7 @@ p.body a, ul.body li a {
 
   <div class="foot">
     <div>TavernOS · Alpha self-test</div>
-    <div><a href="mailto:contact@tavernos.ai">contact@tavernos.ai</a></div>
+    <div><a href="mailto:support@tavernos.ai">support@tavernos.ai</a></div>
   </div>
 
 </div>
