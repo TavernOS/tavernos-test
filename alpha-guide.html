@@ -72,6 +72,7 @@ body::before {
   max-width: 780px;
   margin: 0 auto;
   padding: 56px 32px 80px;
+  scroll-margin-top: 24px;
 }
 
 /* Topbar */
@@ -112,8 +113,53 @@ body::before {
 }
 .crumb a:hover { color: var(--teal); border-color: var(--teal); }
 
+/* Anchor nav (right rail, fixed; hidden below 1180px) */
+.anchor-nav {
+  position: fixed;
+  top: 120px;
+  left: calc(50% + 420px);
+  width: 180px;
+  max-height: calc(100vh - 160px);
+  overflow-y: auto;
+  z-index: 5;
+  padding-left: 18px;
+  border-left: 1px solid var(--rule);
+}
+.anchor-nav-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--dim);
+  font-weight: 500;
+  margin-bottom: 14px;
+  display: block;
+}
+.anchor-nav ol { list-style: none; }
+.anchor-nav li { margin-bottom: 6px; }
+.anchor-nav a {
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--dim);
+  text-decoration: none;
+  display: block;
+  padding: 3px 0 3px 12px;
+  margin-left: -14px;
+  border-left: 2px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.anchor-nav a:hover { color: var(--navy); }
+.anchor-nav a.active {
+  color: var(--navy);
+  border-left-color: var(--teal);
+  font-weight: 500;
+}
+@media (max-width: 1180px) {
+  .anchor-nav { display: none; }
+}
+
 /* Hero */
-.hero { margin-bottom: 52px; }
+.hero { margin-bottom: 36px; }
 .kicker {
   font-size: 13px;
   font-weight: 500;
@@ -144,6 +190,74 @@ body::before {
   margin-bottom: 14px;
 }
 .hero p.sub { font-size: 15px; color: var(--dim); }
+
+/* Cheat-sheet (navy inverted; reads as the dense reference card) */
+.cheatsheet {
+  background: var(--navy);
+  color: var(--paper);
+  padding: 30px 34px;
+  margin: 0 0 56px;
+  border-radius: 4px;
+  scroll-margin-top: 24px;
+}
+.cheatsheet-eyebrow {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--teal-soft);
+  margin-bottom: 12px;
+  display: block;
+}
+.cheatsheet h3 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 500;
+  font-variation-settings: "opsz" 96, "SOFT" 30;
+  font-size: 24px;
+  color: var(--paper);
+  letter-spacing: -0.01em;
+  margin-bottom: 22px;
+  line-height: 1.15;
+}
+.cs-rows { display: grid; gap: 1px; background: rgba(250, 250, 247, 0.1); }
+.cs-row {
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  gap: 18px;
+  padding: 12px 0;
+  background: var(--navy);
+  align-items: baseline;
+}
+.cs-key {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--teal-soft);
+}
+.cs-val {
+  font-size: 14.5px;
+  color: rgba(250, 250, 247, 0.92);
+  line-height: 1.5;
+}
+.cs-val code {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  background: rgba(250, 250, 247, 0.08);
+  padding: 1px 7px;
+  border-radius: 2px;
+  color: var(--paper);
+}
+.cs-val a {
+  color: var(--code-teal);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(94, 234, 212, 0.4);
+}
+.cs-val a:hover { border-bottom-color: var(--code-teal); }
+@media (max-width: 560px) {
+  .cs-row { grid-template-columns: 1fr; gap: 4px; }
+}
 
 /* Callout */
 .callout {
@@ -177,7 +291,20 @@ h2.section {
   margin: 56px 0 20px;
   padding-top: 24px;
   border-top: 1px solid var(--rule);
+  scroll-margin-top: 24px;
 }
+
+/* Quick-start variant: same heading style, but the section body sits in a
+   teal-rule frame to mark it as the "first time? start here" piece. */
+.quickstart {
+  background: var(--paper-2);
+  border-left: 3px solid var(--teal);
+  padding: 20px 24px 22px;
+  border-radius: 0 4px 4px 0;
+  margin: 12px 0 24px;
+}
+.quickstart p.body { margin-top: 0; }
+.quickstart ol.body { margin-bottom: 4px; }
 
 /* Body prose */
 p.body {
@@ -211,9 +338,7 @@ ul.body li::before {
   top: 6px;
 }
 ol.body { counter-reset: ol-counter; }
-ol.body li {
-  counter-increment: ol-counter;
-}
+ol.body li { counter-increment: ol-counter; }
 ol.body li::before {
   content: counter(ol-counter, decimal-leading-zero);
   position: absolute;
@@ -293,10 +418,60 @@ code.inline {
 }
 
 /* Inline links in body */
-p.body a, ul.body li a {
+p.body a, ul.body li a, ol.body li a {
   color: var(--teal);
   text-decoration: none;
   border-bottom: 1px solid currentColor;
+}
+
+/* Shortcuts grid */
+.shortcuts {
+  background: var(--paper-2);
+  padding: 26px 30px;
+  border-radius: 4px;
+  margin: 18px 0 24px;
+}
+.shortcut-cat {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--teal);
+  font-weight: 500;
+  margin: 22px 0 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--rule);
+}
+.shortcut-cat:first-child { margin-top: 0; }
+.shortcut-row {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 14px 24px;
+  padding: 7px 0;
+  align-items: baseline;
+}
+.shortcut-key {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  color: var(--navy);
+  font-weight: 500;
+}
+.shortcut-desc {
+  font-size: 14px;
+  color: var(--ink);
+  line-height: 1.5;
+}
+.shortcut-desc code {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12.5px;
+  background: var(--paper);
+  padding: 1px 6px;
+  border-radius: 3px;
+  color: var(--navy);
+}
+@media (max-width: 560px) {
+  .shortcut-row { grid-template-columns: 1fr; gap: 2px; padding: 6px 0; }
+  .shortcut-key { color: var(--teal); font-size: 12.5px; }
 }
 
 /* Footer */
@@ -321,12 +496,95 @@ p.body a, ul.body li a {
 @media (max-width: 560px) {
   .stage { padding: 40px 22px 64px; }
   .foot { flex-direction: column; gap: 8px; align-items: flex-start; }
+  .cheatsheet { padding: 24px 22px; }
+  .shortcuts { padding: 22px 22px; }
 }
 
 ::selection { background: var(--teal); color: var(--paper); }
+
+/* ============================================================ PRINT
+   Reading-friendly print: drop background atmosphere, invert dark code
+   blocks to light, hide nav/copy/topbar/foot, show link URLs. */
+@media print {
+  body { background: white; color: black; }
+  body::before, .anchor-nav, .copy-btn, .foot, .topbar { display: none !important; }
+  .stage { padding: 12px 0; max-width: 100%; }
+
+  h1, h2, h2.section, .hero h1, .cheatsheet h3 {
+    color: black !important;
+    page-break-after: avoid;
+  }
+  .hero h1 em, em, .kicker { color: #444 !important; }
+
+  .cheatsheet {
+    background: white !important;
+    color: black !important;
+    border: 2px solid black;
+    border-radius: 0;
+    padding: 20px 24px;
+    margin-bottom: 32px;
+    page-break-after: always;
+  }
+  .cheatsheet-eyebrow, .cs-key { color: #555 !important; }
+  .cs-val { color: black !important; }
+  .cs-val code, .cs-val a {
+    background: #eee !important;
+    color: black !important;
+    border-bottom: none !important;
+  }
+  .cs-rows { background: transparent !important; }
+  .cs-row { background: white !important; border-bottom: 1px solid #ccc; }
+
+  .code {
+    background: #f5f5f5 !important;
+    color: black !important;
+    border: 1px solid #ccc;
+    page-break-inside: avoid;
+  }
+  .code .os {
+    background: transparent !important;
+    color: #666 !important;
+    border-color: #999 !important;
+  }
+
+  .quickstart, .callout {
+    background: white !important;
+    border-left: 3px solid black;
+  }
+
+  .shortcuts { background: #f7f7f7 !important; }
+  .shortcut-cat { color: black !important; border-color: #ccc; }
+
+  a { color: black !important; }
+  p.body a[href^="http"]::after,
+  p.body a[href^="mailto"]::after,
+  ul.body li a[href^="http"]::after,
+  ul.body li a[href^="mailto"]::after {
+    content: ' (' attr(href) ')';
+    font-size: 0.85em;
+    color: #555;
+  }
+}
 </style>
 </head>
 <body>
+
+<!-- Right-rail anchor nav (desktop only; hidden < 1180px) -->
+<nav class="anchor-nav" aria-label="On this page">
+  <span class="anchor-nav-label">On this page</span>
+  <ol>
+    <li><a href="#cheatsheet">Cheat sheet</a></li>
+    <li><a href="#about">What it is</a></li>
+    <li><a href="#alpha">In alpha</a></li>
+    <li><a href="#setup">Setup</a></li>
+    <li><a href="#quickstart">Quick start</a></li>
+    <li><a href="#ingest">Bringing files in</a></li>
+    <li><a href="#clients">Clients</a></li>
+    <li><a href="#bugs">When it breaks</a></li>
+    <li><a href="#limits">Limits</a></li>
+    <li><a href="#shortcuts">Shortcuts</a></li>
+  </ol>
+</nav>
 
 <div class="stage">
 
@@ -342,19 +600,49 @@ p.body a, ul.body li a {
       TavernOS is in alpha. This document explains what to test, how the system is laid out, and where to send what you find. Keep it open in another tab while you work — most of it answers a question you'll have once and never need again.
     </p>
     <p class="body sub">
-      For first-time setup, see the install page. For a five-minute machine check before your first session, see the <a href="alpha-self-test.html">self-test</a>.
+      For first-time setup, see the <a href="access.html">install page</a>. For a five-minute machine check before your first session, see the <a href="alpha-self-test.html">self-test</a>.
     </p>
   </div>
 
-  <h2 class="section">What TavernOS is</h2>
+  <!-- ============================================================ CHEAT SHEET -->
+  <section class="cheatsheet" id="cheatsheet" aria-labelledby="cs-h">
+    <span class="cheatsheet-eyebrow">The short version</span>
+    <h3 id="cs-h">If you read nothing else.</h3>
+    <div class="cs-rows">
+      <div class="cs-row">
+        <div class="cs-key">Run</div>
+        <div class="cs-val"><code>norm</code> for the CLI · <code>norm --web</code> for the browser UI</div>
+      </div>
+      <div class="cs-row">
+        <div class="cs-key">Ingest</div>
+        <div class="cs-val">Drag-drop a file onto the chat window, click 📎, or type <code>/ingest &lt;path&gt;</code></div>
+      </div>
+      <div class="cs-row">
+        <div class="cs-key">Talk</div>
+        <div class="cs-val">Pick an agent from the dropdown — Sam routes to the right specialist by default</div>
+      </div>
+      <div class="cs-row">
+        <div class="cs-key">Clients</div>
+        <div class="cs-val">Files scoped per client (default <code>_self</code>); switch with <code>/client switch &lt;slug&gt;</code></div>
+      </div>
+      <div class="cs-row">
+        <div class="cs-key">Report</div>
+        <div class="cs-val">Email <a href="mailto:support@tavernos.ai">support@tavernos.ai</a> with what you did, expected, saw</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ ABOUT -->
+  <h2 class="section" id="about">What it is</h2>
   <p class="body">
-    TavernOS is a local desktop tool for working with documents and AI agents. You ingest files (Word, PDF, Excel, PowerPoint, plain text, email exports) and talk to specialized agents that can read those files and produce work products — board decks, briefs, summaries.
+    TavernOS runs on your machine. You ingest documents — Word, PDF, Excel, PowerPoint, plain text, email exports — and specialist agents read them and produce work products: board decks, briefs, summaries, audits.
   </p>
   <p class="body">
-    Everything runs on your machine. Ingested files are stored in a local SQLite database, scoped per client. Nothing leaves your computer except the questions you send to the AI.
+    Ingested files live in a local SQLite database, scoped per client. Nothing leaves your computer except the questions you send to the AI.
   </p>
 
-  <h2 class="section">What you're testing</h2>
+  <!-- ============================================================ ALPHA SCOPE -->
+  <h2 class="section" id="alpha">What's in alpha</h2>
   <p class="body">The alpha covers the core ingest-and-respond loop:</p>
   <ul class="body">
     <li>File ingestion via three paths: CLI <code class="inline">/ingest</code>, paperclip button in the web UI, drag-and-drop onto the chat window.</li>
@@ -362,9 +650,10 @@ p.body a, ul.body li a {
     <li>A small roster of pre-built agents (Sam routes; Rebecca builds decks; others domain-specific).</li>
     <li>The alpha demo workflow: ingest a real document, ask an agent to do something with it.</li>
   </ul>
-  <p class="body">What's not in scope is in <em>Known limits</em> at the bottom.</p>
+  <p class="body">What's <em>not</em> in scope is in <a href="#limits">Limits</a> at the bottom.</p>
 
-  <h2 class="section">Setup</h2>
+  <!-- ============================================================ SETUP -->
+  <h2 class="section" id="setup">Setup</h2>
   <p class="body">
     Windows is the primary alpha target. macOS is supported but less tested — if you're on Mac, expect to be the one finding the platform-specific bugs.
   </p>
@@ -392,20 +681,24 @@ p.body a, ul.body li a {
     You should see the chat interface: an agent dropdown at the top, a message area in the middle, an input row at the bottom, and a right-rail panel labeled <strong>Files</strong>.
   </p>
 
-  <h2 class="section">First five minutes</h2>
+  <!-- ============================================================ QUICKSTART -->
+  <h2 class="section" id="quickstart">Quick start · first five minutes</h2>
   <p class="body">
-    Once installed, walk through this to confirm everything works end-to-end. The longer version is on the <a href="alpha-self-test.html">self-test</a> page.
+    Once installed, walk through this end-to-end. The longer version with pass/fail signals is on the <a href="alpha-self-test.html">self-test</a> page.
   </p>
-  <ol class="body">
-    <li>Launch <code class="inline">norm --web</code>. Open the browser to the URL it prints.</li>
-    <li>Drag a Word document onto the chat window from your file manager (File Explorer on Windows, Finder on macOS). You should see a teal "Drop file to ingest" overlay, then a confirmation bubble after you drop.</li>
-    <li>The file appears in the right-rail Files panel.</li>
-    <li>From the agent dropdown, pick <strong>Rebecca-Deck</strong>.</li>
-    <li>Send: <code class="inline">build me a board deck for Q1 using the file I just uploaded</code>.</li>
-    <li>Rebecca should reference your file's actual content. If she asks for source data without acknowledging your upload, something is wrong — see the self-test page's troubleshooting section.</li>
-  </ol>
+  <div class="quickstart">
+    <ol class="body">
+      <li>Launch <code class="inline">norm --web</code>. Open the browser to the URL it prints.</li>
+      <li>Drag a Word document onto the chat window from your file manager (File Explorer on Windows, Finder on macOS). You should see a teal "Drop file to ingest" overlay, then a confirmation bubble after you drop.</li>
+      <li>The file appears in the right-rail Files panel.</li>
+      <li>From the agent dropdown, pick <strong>Rebecca-Deck</strong>.</li>
+      <li>Send: <code class="inline">build me a board deck for Q1 using the file I just uploaded</code>.</li>
+      <li>Rebecca should reference your file's actual content. If she asks for source data without acknowledging your upload, something is wrong — see <a href="alpha-self-test.html">self-test</a> troubleshooting.</li>
+    </ol>
+  </div>
 
-  <h2 class="section">Bringing files in</h2>
+  <!-- ============================================================ INGEST -->
+  <h2 class="section" id="ingest">Bringing files in</h2>
   <p class="body">
     Three ways to ingest a file. All three share the same backend, so they should behave identically — if one breaks, the others probably will too.
   </p>
@@ -431,20 +724,24 @@ p.body a, ul.body li a {
     Supported formats: <code class="inline">.txt</code>, <code class="inline">.md</code>, <code class="inline">.pdf</code>, <code class="inline">.docx</code>, <code class="inline">.xlsx</code>, <code class="inline">.pptx</code>, <code class="inline">.msg</code>, <code class="inline">.eml</code>. Anything else fails with a clean error message rather than crashing.
   </p>
 
-  <h2 class="section">Per-client model</h2>
+  <!-- ============================================================ CLIENTS -->
+  <h2 class="section" id="clients">Per-client model</h2>
   <p class="body">
     TavernOS scopes ingested files by <strong>client</strong>. The default client is <code class="inline">_self</code> — your own work. To create or switch clients:
   </p>
   <div class="code">
-<button class="copy-btn" onclick="copyCode(this)">Copy</button>/client switch &lt;name&gt;</div>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>/client new
+/client switch &lt;slug&gt;
+/client list</div>
   <p class="body">
-    Create a new client first with <code class="inline">/client new</code> — that runs a short setup wizard. Then <code class="inline">/client switch &lt;slug&gt;</code> moves between existing workspaces. Files ingested under one client are <strong>not</strong> visible from another. Switching back returns you to that client's files.
+    <code class="inline">/client new</code> runs a short setup wizard. <code class="inline">/client switch &lt;slug&gt;</code> moves between existing workspaces. Files ingested under one client are <strong>not</strong> visible from another. Switching back returns you to that client's files.
   </p>
   <p class="body sub">
     This matters for alpha testing: if you ingest a file under one client and don't see it later, check which client is active in the chat UI before reporting a bug.
   </p>
 
-  <h2 class="section">Reporting what you find</h2>
+  <!-- ============================================================ BUGS -->
+  <h2 class="section" id="bugs">When it breaks</h2>
   <p class="body">Email everything to <a href="mailto:support@tavernos.ai">support@tavernos.ai</a>.</p>
   <p class="body">A useful bug report has:</p>
   <ul class="body">
@@ -458,7 +755,8 @@ p.body a, ul.body li a {
     Browser dev tools output is gold. If something fails in the web UI, opening the <strong>Console</strong> and <strong>Network</strong> tabs and capturing what you see there is more useful than a screenshot of the chat.
   </p>
 
-  <h2 class="section">Known limits</h2>
+  <!-- ============================================================ LIMITS -->
+  <h2 class="section" id="limits">Known limits</h2>
   <p class="body">
     These are intentional gaps for the alpha — please don't report them as bugs:
   </p>
@@ -469,6 +767,79 @@ p.body a, ul.body li a {
     <li><strong>No automated test suite.</strong> Internal verification is a manual checklist. If you hit something the checklist doesn't cover, that's exactly the kind of finding the alpha is for.</li>
     <li><strong>Agent roster is fixed.</strong> Custom agents aren't user-creatable yet.</li>
   </ul>
+
+  <!-- ============================================================ SHORTCUTS -->
+  <h2 class="section" id="shortcuts">Shortcuts</h2>
+  <p class="body">
+    Reference card. Keep this section open while you work.
+  </p>
+  <div class="shortcuts">
+
+    <div class="shortcut-cat">Slash commands · in CLI or web input</div>
+    <div class="shortcut-row">
+      <div class="shortcut-key">/ingest &lt;path&gt;</div>
+      <div class="shortcut-desc">Ingest a file from disk into the current client's index</div>
+    </div>
+    <div class="shortcut-row">
+      <div class="shortcut-key">/help</div>
+      <div class="shortcut-desc">List available commands</div>
+    </div>
+    <div class="shortcut-row">
+      <div class="shortcut-key">/client new</div>
+      <div class="shortcut-desc">Create a new client (runs short setup wizard)</div>
+    </div>
+    <div class="shortcut-row">
+      <div class="shortcut-key">/client switch &lt;slug&gt;</div>
+      <div class="shortcut-desc">Switch the active client</div>
+    </div>
+    <div class="shortcut-row">
+      <div class="shortcut-key">/client list</div>
+      <div class="shortcut-desc">List existing clients</div>
+    </div>
+
+    <div class="shortcut-cat">Keyboard</div>
+    <div class="shortcut-row">
+      <div class="shortcut-key">Ctrl-C</div>
+      <div class="shortcut-desc">Exit <code>norm</code> CLI (Windows + macOS)</div>
+    </div>
+    <div class="shortcut-row">
+      <div class="shortcut-key">Ctrl-Shift-R</div>
+      <div class="shortcut-desc">Hard-refresh the web UI (Windows / Linux)</div>
+    </div>
+    <div class="shortcut-row">
+      <div class="shortcut-key">Cmd-Shift-R</div>
+      <div class="shortcut-desc">Hard-refresh the web UI (macOS)</div>
+    </div>
+
+    <div class="shortcut-cat">Ingest paths</div>
+    <div class="shortcut-row">
+      <div class="shortcut-key">drag-and-drop</div>
+      <div class="shortcut-desc">Drag a file onto the chat window — teal overlay confirms drop</div>
+    </div>
+    <div class="shortcut-row">
+      <div class="shortcut-key">📎 paperclip</div>
+      <div class="shortcut-desc">Click in input row, file picker opens</div>
+    </div>
+    <div class="shortcut-row">
+      <div class="shortcut-key">/ingest &lt;path&gt;</div>
+      <div class="shortcut-desc">In chat input or CLI; absolute path; quote if it has spaces</div>
+    </div>
+
+    <div class="shortcut-cat">Supported formats</div>
+    <div class="shortcut-row">
+      <div class="shortcut-key">.txt · .md · .pdf</div>
+      <div class="shortcut-desc">Plain text, markdown, PDF</div>
+    </div>
+    <div class="shortcut-row">
+      <div class="shortcut-key">.docx · .xlsx · .pptx</div>
+      <div class="shortcut-desc">Word, Excel, PowerPoint</div>
+    </div>
+    <div class="shortcut-row">
+      <div class="shortcut-key">.msg · .eml</div>
+      <div class="shortcut-desc">Outlook export, standards email</div>
+    </div>
+
+  </div>
 
   <div class="foot">
     <div>TavernOS · Alpha tester guide</div>
@@ -497,6 +868,36 @@ function copyCode(btn) {
     setTimeout(() => { btn.textContent = 'Copy'; }, 1400);
   });
 }
+
+/* Anchor-nav active-section highlighting via IntersectionObserver.
+   The rootMargin biases the "active" zone toward the upper third of the
+   viewport so headings near the top win when multiple sections show. */
+(function () {
+  const navLinks = document.querySelectorAll('.anchor-nav a');
+  if (!navLinks.length) return;
+
+  const targets = [];
+  navLinks.forEach(a => {
+    const id = a.getAttribute('href').slice(1);
+    const el = document.getElementById(id);
+    if (el) targets.push(el);
+  });
+
+  const setActive = (id) => {
+    navLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+    });
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    const visible = entries.filter(e => e.isIntersecting);
+    if (!visible.length) return;
+    visible.sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+    setActive(visible[0].target.id);
+  }, { rootMargin: '-15% 0px -70% 0px', threshold: 0 });
+
+  targets.forEach(t => observer.observe(t));
+})();
 </script>
 
 </body>
