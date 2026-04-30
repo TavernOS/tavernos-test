@@ -4,3 +4,7 @@
 wrangler.toml
 *.md
 .assetsignore
+src
+package.json
+package-lock.json
+node_modules
