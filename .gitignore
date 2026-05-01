@@ -1,0 +1,16 @@
+# Node tooling installed by wrangler — never commit
+node_modules/
+
+# Wrangler local state
+.wrangler/
+
+# OS noise
+.DS_Store
+Thumbs.db
+
+# Secrets (just in case)
+.dev.vars
+*.env
+
+# Logs
+*.log
