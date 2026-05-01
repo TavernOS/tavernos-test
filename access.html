@@ -546,7 +546,7 @@ code.inline {
     <li>Open <strong>File Explorer</strong> (click the yellow folder icon in your taskbar, or press the Windows key + E).</li>
     <li>Click <strong>Downloads</strong> in the left sidebar.</li>
     <li>Find <code class="inline">tavernos-alpha.zip</code> in the list. Right-click it → <strong>Extract All…</strong> → click <strong>Extract</strong>.</li>
-    <li>A new folder called <code class="inline">tavernos-alpha</code> appears in Downloads. You can close any windows that pop up.</li>
+    <li>A new folder called <code class="inline">tavernos</code> appears in Downloads. You can close any windows that pop up.</li>
   </ul>
 
   <!-- STEP 2 -->
@@ -597,13 +597,13 @@ code.inline {
   </p>
 
   <div class="code">
-<button class="copy-btn" onclick="copyCode(this)">Copy</button>cd $HOME\Downloads\tavernos-alpha</div>
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>cd $HOME\Downloads\tavernos</div>
 
   <p class="body">
     To paste into PowerShell: click the Copy button on the code block above, then <strong>right-click anywhere inside the PowerShell window</strong>. Right-click is how PowerShell pastes. Press <strong>Enter</strong> after.
   </p>
   <p class="body sub">
-    If it worked, the prompt at the bottom of PowerShell now ends with <code class="inline">tavernos-alpha&gt;</code>. If it says "Cannot find path" or similar, the unzipped folder landed somewhere else — email me and we'll sort it.
+    If it worked, the prompt at the bottom of PowerShell now ends with <code class="inline">tavernos&gt;</code>. If it says "Cannot find path" or similar, the unzipped folder landed somewhere else — email me and we'll sort it.
   </p>
 
   <!-- STEP 5 -->
@@ -619,7 +619,7 @@ python -m venv .venv
 pip install .</div>
 
   <p class="body">
-    A lot of text will scroll past. This is normal — it's downloading the pieces TavernOS needs. Wait until text stops scrolling and the prompt comes back (ending in <code class="inline">tavernos-alpha&gt;</code>). Usually 1–3 minutes depending on your internet speed.
+    A lot of text will scroll past. This is normal — it's downloading the pieces TavernOS needs. Wait until text stops scrolling and the prompt comes back (ending in <code class="inline">tavernos&gt;</code>). Usually 1–3 minutes depending on your internet speed.
   </p>
   <p class="body sub">
     You'll also notice the prompt now starts with <code class="inline">(.venv)</code>. That means you're in the right environment. Good sign.
@@ -697,7 +697,7 @@ pip install .</div>
     Once it's installed, coming back is three commands. Copy them one at a time — each after the previous one finishes.
   </p>
   <div class="code">
-<button class="copy-btn" onclick="copyCode(this)">Copy</button>cd $HOME\Downloads\tavernos-alpha
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>cd $HOME\Downloads\tavernos
 .\.venv\Scripts\Activate.ps1
 python norm.py</div>
   <p class="body sub">
@@ -711,7 +711,7 @@ python norm.py</div>
   </p>
   <ul class="body">
     <li><strong>"python is not recognized…"</strong> — Python didn't get added to PATH in Step 02. Reinstall Python from python.org and make sure to tick the "Add python.exe to PATH" checkbox.</li>
-    <li><strong>"Cannot find path… tavernos-alpha"</strong> — the unzipped folder landed somewhere other than Downloads. Email me and include where you actually unzipped it.</li>
+    <li><strong>"Cannot find path… tavernos"</strong> — the unzipped folder landed somewhere other than Downloads. Email me and include where you actually unzipped it.</li>
     <li><strong>Red "Execution Policy" error</strong> — Step 05's first line didn't run. Copy just that one line (<code class="inline">Set-ExecutionPolicy…</code>) and paste it into PowerShell by itself, then re-try Step 05.</li>
     <li><strong>"Invalid API key" or authentication errors</strong> — go back to console.anthropic.com, create a new key, and use that one. Make sure you didn't copy extra spaces.</li>
     <li><strong>Anything else, or anything that looks scary</strong> — screenshot the PowerShell window and email it to <a href="mailto:contact@tavernos.ai" style="color: var(--teal); text-decoration: none; border-bottom: 1px solid currentColor;">contact@tavernos.ai</a>. I'll jump on a call with you.</li>
