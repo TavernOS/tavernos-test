@@ -5,12 +5,20 @@
 //   POST /api/loop   → stay-in-the-loop signup
 //   * (anything else) → falls through to static assets (the /apply page, etc.)
 //
-// Bindings (set in wrangler.jsonc):
+// Bindings (set in wrangler.toml):
 //   SUBMISSIONS    — KV namespace (durable storage)
 //   ASSETS         — static asset binding
 //   NOTIFY_EMAIL   — vars: where notifications go (default: dan@tavernos.ai)
 //   CALENDLY_URL   — vars: Calendly link, swap when live
 //   RESEND_API_KEY — secret: when set, emails send; when unset, they log and skip
+//
+// Changelog:
+//   - Removed two TODO-flagged diagnostic blocks in sendEmail() that logged
+//     the Resend API key fingerprint (length + first 4 + last 2 chars) and
+//     the Resend response body (up to 500 chars) on every email send. Both
+//     were left over from debugging a Resend connectivity issue that has
+//     since been resolved. Cloudflare logs are no longer leaking either
+//     fingerprint material or response payloads.
 
 const FROM = 'dan@tavernos.ai';
 const REPLY_TO = 'dan@tavernos.ai';
@@ -205,15 +213,9 @@ async function sendEmail(env, msg) {
     return null;
   }
 
-  // ── DIAGNOSTIC (TODO: remove once Resend issue resolved) ──────────────
-  // Logs the shape of the secret without exposing it. Catches hidden
-  // whitespace (a stray newline in the secret produces a malformed
-  // Authorization header — edge proxies reject those with an empty 400,
-  // which matches what we're seeing).
-  const _key = env.RESEND_API_KEY;
-  console.log(`Key check: length=${_key.length} starts="${_key.slice(0, 4)}" ends="${_key.slice(-2)}" hasWhitespace=${/\s/.test(_key)}`);
-  // ──────────────────────────────────────────────────────────────────────
-
+  // Log the call without exposing payload or key material. The metadata
+  // (recipient + subject) is in the KV record already; this just confirms
+  // the send actually fired.
   console.log(`Calling Resend: to=${msg.to} subject="${msg.subject}"`);
 
   const body = {
@@ -234,18 +236,12 @@ async function sendEmail(env, msg) {
       },
       body: JSON.stringify(body),
     });
-    const responseText = await res.text();
 
-    // ── DIAGNOSTIC (TODO: remove once Resend issue resolved) ────────────
-    // Response headers tell us whether this is Resend's app server
-    // (content-type: application/json + x-request-id present) or an
-    // upstream edge/proxy rejection (often text/html, no request-id).
-    const _ct = res.headers.get('content-type') || '(none)';
-    const _reqId = res.headers.get('x-request-id') || res.headers.get('cf-ray') || '(none)';
-    console.log(`Resend response ${res.status} content-type=${_ct} request-id=${_reqId} body="${responseText.slice(0, 500)}"`);
-    // ────────────────────────────────────────────────────────────────────
-
+    // Only log the response on failure. On success, no payload reaches
+    // Cloudflare logs. On failure, we log the body so you can debug — by
+    // definition something is already broken at that point.
     if (!res.ok) {
+      const responseText = await res.text();
       console.error(`Resend ${res.status}: ${responseText} | from=${msg.from} to=${msg.to} subject=${msg.subject}`);
     }
     return res;
