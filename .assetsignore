@@ -9,3 +9,6 @@ package.json
 package-lock.json
 node_modules
 .DS_Store
+.deploy_baks_*
+*.bak
+_quarantine
