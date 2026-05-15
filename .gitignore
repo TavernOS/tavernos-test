@@ -14,7 +14,6 @@ Thumbs.db
 
 # Logs
 *.log
-node_modules/
 
 # Deploy-script residue (session 36 fold, obs #7 — WORKING_AGREEMENTS Deploy §5)
 .deploy_baks_*/
