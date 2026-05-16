@@ -13,6 +13,28 @@
 //   RESEND_API_KEY — secret: when set, emails send; when unset, they log and skip
 //
 // Changelog:
+//   - SEC-4: every Worker response is now wrapped by applyHeaders() to set
+//     8 security headers — Strict-Transport-Security (1-year HSTS with
+//     includeSubDomains), Content-Security-Policy (10 directives including
+//     strict default-src / frame-ancestors 'none' / form-action 'self' /
+//     object-src 'none', with Google Fonts allowlisted in style-src and
+//     font-src), X-Content-Type-Options: nosniff, X-Frame-Options: DENY,
+//     Referrer-Policy: strict-origin-when-cross-origin, Permissions-Policy
+//     (camera / microphone / geolocation / payment / usb / interest-cohort
+//     all disabled), Cross-Origin-Opener-Policy: same-origin, Cross-Origin-
+//     Resource-Policy: same-origin. The CSP uses 'unsafe-inline' on both
+//     script-src and style-src as a closed-alpha compromise — 4 of 5 site
+//     pages currently have inline <script> blocks (real form handlers, not
+//     trivial) and all 5 have inline <style> blocks. Future hardening:
+//     refactor pages to externalize inline scripts/styles and tighten the
+//     CSP to remove 'unsafe-inline'.
+//   - SEC-6 fold: scrubbed full-submission PII from the two KV-write-failure
+//     console.error calls (handleApply ~line 124, handleLoop ~line 198).
+//     Previous behavior logged the entire submission object on KV failure,
+//     including name / email / role / task body / cf country & city for
+//     applications and email / userAgent for loop signups. New behavior
+//     logs the error message plus a minimal { id, email } or { email }
+//     traceability tuple. Surfaced by SEC-6 audit (s45-b).
 //   - Removed two TODO-flagged diagnostic blocks in sendEmail() that logged
 //     the Resend API key fingerprint (length + first 4 + last 2 chars) and
 //     the Resend response body (up to 500 chars) on every email send. Both
@@ -46,18 +68,63 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default {
   async fetch(request, env, ctx) {
-    const url = new URL(request.url);
-
-    if (url.pathname === '/api/apply' && request.method === 'POST') {
-      return handleApply(request, env, ctx);
-    }
-    if (url.pathname === '/api/loop' && request.method === 'POST') {
-      return handleLoop(request, env, ctx);
-    }
-    // Anything else → static assets (the /apply page, /access, etc.)
-    return env.ASSETS.fetch(request);
+    return applyHeaders(await handle(request, env, ctx));
   },
 };
+
+async function handle(request, env, ctx) {
+  const url = new URL(request.url);
+
+  if (url.pathname === '/api/apply' && request.method === 'POST') {
+    return handleApply(request, env, ctx);
+  }
+  if (url.pathname === '/api/loop' && request.method === 'POST') {
+    return handleLoop(request, env, ctx);
+  }
+  // Anything else → static assets (the /apply page, /access, etc.)
+  return env.ASSETS.fetch(request);
+}
+
+// ── Security headers (SEC-4) ───────────────────────────────────────────
+
+const CSP = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline'",
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+  "font-src 'self' https://fonts.gstatic.com",
+  "img-src 'self' data:",
+  "connect-src 'self'",
+  "frame-ancestors 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "object-src 'none'",
+].join('; ');
+
+const PERMISSIONS_POLICY = [
+  'camera=()',
+  'microphone=()',
+  'geolocation=()',
+  'payment=()',
+  'usb=()',
+  'interest-cohort=()',
+].join(', ');
+
+function applyHeaders(response) {
+  const headers = new Headers(response.headers);
+  headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  headers.set('X-Content-Type-Options', 'nosniff');
+  headers.set('X-Frame-Options', 'DENY');
+  headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  headers.set('Permissions-Policy', PERMISSIONS_POLICY);
+  headers.set('Cross-Origin-Opener-Policy', 'same-origin');
+  headers.set('Cross-Origin-Resource-Policy', 'same-origin');
+  headers.set('Content-Security-Policy', CSP);
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
+}
 
 // ── /api/apply ─────────────────────────────────────────────────────────
 
@@ -121,7 +188,8 @@ async function handleApply(request, env, ctx) {
       JSON.stringify(submission)
     );
   } catch (err) {
-    console.error('KV write failed (apply)', err, submission);
+    // SEC-6: log error + traceability tuple only, not the full submission.
+    console.error('KV write failed (apply)', err?.message || err, { id, email });
   }
 
   // Emails fire-and-forget so the user gets their response immediately.
@@ -195,7 +263,8 @@ async function handleLoop(request, env, ctx) {
       JSON.stringify(submission)
     );
   } catch (err) {
-    console.error('KV write failed (loop)', err, submission);
+    // SEC-6: log error + traceability tuple only, not the full submission.
+    console.error('KV write failed (loop)', err?.message || err, { email });
   }
 
   ctx.waitUntil(sendEmail(env, {
