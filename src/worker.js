@@ -19,6 +19,13 @@
 //     were left over from debugging a Resend connectivity issue that has
 //     since been resolved. Cloudflare logs are no longer leaking either
 //     fingerprint material or response payloads.
+//   - SEC-3 hardening: name field is now stripped of CR/LF/Unicode line
+//     separators (U+2028, U+2029) at intake. This closes a low-severity
+//     header injection vector where a crafted name containing newlines
+//     could in principle inject headers into the notification email's
+//     subject line ([apply] {name} — {role}). The other potentially-
+//     header-bound user input (email) was already validated by EMAIL_RE
+//     which rejects whitespace, so no change needed there.
 
 const FROM = 'dan@tavernos.ai';
 const REPLY_TO = 'dan@tavernos.ai';
@@ -71,7 +78,7 @@ async function handleApply(request, env, ctx) {
     return ok(isJson, { name: '' });
   }
 
-  const name = str(data.name).slice(0, 200);
+  const name = stripCRLF(data.name).slice(0, 200);
   const email = str(data.email).slice(0, 320).toLowerCase();
   const role = str(data.role).slice(0, 100);
   const task = str(data.task).slice(0, 5000);
@@ -280,6 +287,15 @@ function badRequest(isJson, message, fields) {
 }
 
 function str(v) { return (v == null ? '' : String(v)).trim(); }
+
+// Strip CR, LF, and Unicode line separators (U+2028, U+2029) from any
+// user-submitted string that may end up in an email header field.
+// Superset of str(): same null-safe coercion + .trim(), plus the CRLF
+// substitution. Routes a 'Hacker\r\nBcc: x@evil.com' submission to
+// 'Hacker Bcc: x@evil.com' before it can become a malformed header.
+function stripCRLF(s) {
+  return String(s == null ? '' : s).replace(/[\r\n\u2028\u2029]+/g, ' ').trim();
+}
 
 function dayInTwoDays() {
   const d = new Date();
