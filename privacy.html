@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Privacy — TavernOS</title>
+  <meta name="description" content="How TavernOS handles your data. Plain English." />
+  <meta name="robots" content="index, follow" />
+
+  <meta property="og:title" content="TavernOS · privacy" />
+  <meta property="og:description" content="How TavernOS handles your data." />
+  <meta property="og:image" content="https://tavernos.ai/og.png" />
+  <meta property="og:url" content="https://tavernos.ai/privacy" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content="https://tavernos.ai/og.png" />
+  <link rel="canonical" href="https://tavernos.ai/privacy" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      /* Public Face */
+      --cream: #F2EBDD;
+      --cream-soft: #EBE3D2;
+      --navy: #0E1A2B;
+      --navy-soft: #2A3A52;
+      --teal: #1F7A78;
+      --teal-hover: #186260;
+      /* Product Face (used for the inline note card) */
+      --black: #0F1115;
+      --cream-on-black: #EFE8D8;
+      --cream-on-black-dim: #B8AE97;
+      --glow-teal-dim: #3FB5AB;
+      --rule: #2A2E36;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+
+    body {
+      margin: 0;
+      background: var(--cream);
+      color: var(--navy);
+      font-family: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+      font-size: 16px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* subtle paper warmth — same as /apply */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 18% 8%, rgba(14,26,43,0.025), transparent 42%),
+        radial-gradient(circle at 82% 92%, rgba(31,122,120,0.045), transparent 50%);
+      z-index: 0;
+    }
+
+    .page {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 24px 24px 80px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── header ── */
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 56px;
+      gap: 16px;
+    }
+    .wordmark {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      color: var(--navy);
+      text-decoration: none;
+    }
+    .wordmark::before { content: '~/'; opacity: 0.5; }
+    .updated-tag {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--navy-soft);
+      white-space: nowrap;
+    }
+    .updated-tag .date { color: var(--teal); }
+
+    /* ── hero ── */
+    .hero {
+      margin-bottom: 48px;
+    }
+    .hero h1 {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-weight: 400;
+      font-size: 56px;
+      line-height: 1.05;
+      letter-spacing: -0.01em;
+      margin: 0 0 16px;
+      color: var(--navy);
+    }
+    .hero p {
+      font-size: 17px;
+      line-height: 1.6;
+      color: var(--navy-soft);
+      margin: 0;
+      max-width: 44ch;
+    }
+
+    /* ── inline contact note card (Product Face accent) ── */
+    .note-card {
+      background: var(--black);
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin: 28px 0 48px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px;
+      line-height: 1.65;
+      color: var(--cream-on-black);
+      box-shadow:
+        0 1px 0 rgba(255,255,255,0.04) inset,
+        0 8px 24px -10px rgba(14,26,43,0.22);
+      position: relative;
+      overflow: hidden;
+    }
+    .note-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--glow-teal-dim), transparent);
+      opacity: 0.4;
+    }
+    .note-card .note-label {
+      color: var(--cream-on-black-dim);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .note-card a {
+      color: var(--cream-on-black);
+      text-decoration: underline;
+      text-decoration-color: var(--glow-teal-dim);
+      text-underline-offset: 3px;
+    }
+    .note-card a:hover { color: var(--glow-teal-dim); }
+
+    /* ── body sections ── */
+    section.policy {
+      margin-bottom: 40px;
+    }
+    section.policy:last-of-type { margin-bottom: 0; }
+
+    h2 {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-weight: 400;
+      font-size: 28px;
+      line-height: 1.2;
+      letter-spacing: -0.005em;
+      margin: 0 0 14px;
+      color: var(--navy);
+    }
+    h3 {
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      letter-spacing: 0.005em;
+      margin: 22px 0 8px;
+      color: var(--navy);
+    }
+    h3:first-of-type { margin-top: 4px; }
+
+    p, ul {
+      margin: 0 0 14px;
+      font-size: 15.5px;
+      line-height: 1.65;
+      color: var(--navy-soft);
+    }
+    p:last-child, ul:last-child { margin-bottom: 0; }
+
+    ul {
+      padding-left: 0;
+      list-style: none;
+    }
+    ul li {
+      padding: 0 0 8px 18px;
+      position: relative;
+    }
+    ul li:last-child { padding-bottom: 0; }
+    ul li::before {
+      content: '·';
+      position: absolute;
+      left: 4px;
+      top: -3px;
+      color: var(--teal);
+      font-size: 22px;
+      line-height: 1;
+    }
+
+    strong { color: var(--navy); font-weight: 600; }
+    em { color: var(--navy); font-style: italic; }
+
+    a {
+      color: var(--teal);
+      text-decoration: underline;
+      text-decoration-color: rgba(31,122,120,0.4);
+      text-underline-offset: 3px;
+      transition: color 120ms ease, text-decoration-color 120ms ease;
+    }
+    a:hover {
+      color: var(--teal-hover);
+      text-decoration-color: var(--teal-hover);
+    }
+
+    /* divider between groups of sections */
+    .rule {
+      border: 0;
+      border-top: 1px solid rgba(14,26,43,0.1);
+      margin: 36px 0;
+    }
+
+    /* mono inline labels for processor names */
+    .processor {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13.5px;
+      background: var(--cream-soft);
+      padding: 1px 6px;
+      border-radius: 3px;
+      color: var(--navy);
+    }
+
+    /* ── footer (matches /apply) ── */
+    footer {
+      margin-top: 64px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(14,26,43,0.08);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      color: var(--navy-soft);
+      letter-spacing: 0.04em;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    footer a {
+      color: var(--navy-soft);
+      text-decoration: underline;
+      text-decoration-color: rgba(14,26,43,0.2);
+      text-underline-offset: 3px;
+    }
+    footer a:hover { color: var(--teal); text-decoration-color: var(--teal); }
+    footer a[aria-current="page"] {
+      color: var(--teal);
+      text-decoration-color: var(--teal);
+    }
+
+    /* ── scale up ── */
+    @media (min-width: 600px) {
+      .page { padding: 40px 32px 96px; }
+      .top { margin-bottom: 72px; }
+      .hero h1 { font-size: 68px; }
+      .hero p { font-size: 18px; }
+      h2 { font-size: 32px; }
+    }
+    @media (min-width: 800px) {
+      .hero h1 { font-size: 76px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <a href="/" class="wordmark">tavernos</a>
+      <span class="updated-tag">Updated <span class="date">15 May 2026</span></span>
+    </header>
+
+    <section class="hero">
+      <h1>Privacy.</h1>
+      <p>How TavernOS handles your data. Plain English. No dark patterns. If anything here looks wrong, email and I'll fix it.</p>
+    </section>
+
+    <aside class="note-card" aria-label="Quick contact">
+      <div class="note-label">// the short version</div>
+      <div>
+        I'm Dan, a one-person operation. I collect what you send me on the application form, what your browser sends Cloudflare, and what TavernOS needs to know about your install. I don't sell anything to anyone. I don't run analytics or tracking. To see, correct, or delete your data, email <a href="mailto:dan@tavernos.ai">dan@tavernos.ai</a>.
+      </div>
+    </aside>
+
+    <section class="policy" aria-labelledby="who">
+      <h2 id="who">Who's responsible</h2>
+      <p>TavernOS is operated by <strong>Dan Cobb</strong>, sole proprietor, based in <strong>the United States</strong>. For anything in this policy &mdash; questions, corrections, requests to access or delete your data, complaints &mdash; the contact is <a href="mailto:dan@tavernos.ai">dan@tavernos.ai</a>.</p>
+      <p>Under applicable data protection law in your country and mine, that makes me the <em>data controller</em> for everything covered here.</p>
+    </section>
+
+    <hr class="rule" />
+
+    <section class="policy" aria-labelledby="collect">
+      <h2 id="collect">What I collect</h2>
+
+      <h3>When you apply for a trial</h3>
+      <p>The trial application form on <a href="/apply">/apply</a> asks for:</p>
+      <ul>
+        <li>Your name and email</li>
+        <li>What kind of work you do (one of a short list of roles)</li>
+        <li>What real task you'd want to try TavernOS on (free text)</li>
+        <li>Optional: how many clients or teams you support</li>
+      </ul>
+      <p>The form also includes a hidden "website" field that real humans never fill in. It's a spam trap; if it's filled in, the submission is discarded.</p>
+      <p>When your browser submits the form, Cloudflare (my hosting provider) records standard request metadata: your IP address, the time, your browser's user agent string.</p>
+
+      <h3>When you subscribe to the monthly note</h3>
+      <p>Just your email. Same hidden-field spam trap.</p>
+
+      <h3>When you install TavernOS (after acceptance)</h3>
+      <p>The first time you run TavernOS, it generates an install identifier on your machine. That ID is used solely to bind your trial license to your specific install. I store it alongside your name, email, and the trial dates.</p>
+
+      <h3>When you actually use TavernOS during the trial</h3>
+      <p>During the trial, TavernOS makes API calls to Anthropic's Claude models under an API key I provide. Those calls go directly from your machine to <span class="processor">api.anthropic.com</span> &mdash; they don't pass through any server I run. Anthropic handles the request content under <a href="https://www.anthropic.com/legal/privacy" target="_blank" rel="noopener">their API privacy terms</a>, which include short retention windows and no use of API content for model training. In my Anthropic Console I can see usage metrics tied to my key &mdash; call counts, token counts, billing &mdash; not the content of your prompts or TavernOS's outputs.</p>
+      <p>TavernOS itself runs entirely on your machine. The artifacts it produces &mdash; your Word docs, spreadsheets, decks &mdash; stay on your machine. They don't get uploaded anywhere by TavernOS.</p>
+    </section>
+
+    <hr class="rule" />
+
+    <section class="policy" aria-labelledby="processors">
+      <h2 id="processors">Where it lives</h2>
+      <p>Three named processors handle data on my behalf:</p>
+      <ul>
+        <li><span class="processor">Cloudflare</span> hosts the site, stores trial-application submissions in a key-value store, and logs request metadata. <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener">Their privacy policy</a>.</li>
+        <li><span class="processor">Resend</span> sends me the email notification when you submit an application or subscribe to the note. <a href="https://resend.com/legal/privacy-policy" target="_blank" rel="noopener">Their privacy policy</a>.</li>
+        <li><span class="processor">Anthropic</span> processes API calls during your trial. They never see your name, email, or any other personal data I hold &mdash; only the prompts your TavernOS install sends them. <a href="https://www.anthropic.com/legal/privacy" target="_blank" rel="noopener">Their privacy policy</a>.</li>
+      </ul>
+      <p>No data goes to anyone else. No advertising networks. No analytics services. No data brokers.</p>
+    </section>
+
+    <hr class="rule" />
+
+    <section class="policy" aria-labelledby="retention">
+      <h2 id="retention">How long I keep it</h2>
+      <ul>
+        <li>Trial application submissions stay in Cloudflare KV for <strong>90 days</strong> after receipt, then are deleted. If we end up working together, your records move into my engagement records (see below).</li>
+        <li>"Stay in the loop" subscribers stay on the list until you ask me to remove you, or for two years of inactivity, whichever comes first.</li>
+        <li>Trial license records (install ID, name, email, trial dates) are kept for the duration of your trial plus 30 days after.</li>
+        <li>If we work together after the trial, I keep engagement records (your name, contact, what we did, what I billed) for the period required by tax and accounting rules in <strong>the United States</strong>.</li>
+        <li>Email correspondence in my inbox sits there indefinitely, like any other email I receive. If you'd like me to delete a specific thread, ask.</li>
+      </ul>
+    </section>
+
+    <hr class="rule" />
+
+    <section class="policy" aria-labelledby="legal-basis">
+      <h2 id="legal-basis">Why I'm allowed to hold it</h2>
+      <p>Under modern data protection law (UK GDPR, EU GDPR, and similar frameworks elsewhere), every piece of personal data needs a legal basis. Here's what applies to what:</p>
+      <ul>
+        <li><strong>Trial applications and "stay in the loop" subscriptions</strong> &mdash; <em>consent</em>. You filled in the form. You can withdraw consent at any time by emailing me.</li>
+        <li><strong>Operating your trial license and your TavernOS install</strong> &mdash; <em>contract</em>. You can't have a trial without me holding the records needed to run it.</li>
+        <li><strong>Engagement records after a paid engagement</strong> &mdash; <em>legal obligation</em>. Tax and accounting rules in <strong>the United States</strong> require me to retain records of paid work for a fixed period.</li>
+        <li><strong>Cloudflare's request logs</strong> &mdash; <em>legitimate interest</em> in keeping the site secure and operational.</li>
+      </ul>
+    </section>
+
+    <hr class="rule" />
+
+    <section class="policy" aria-labelledby="cookies">
+      <h2 id="cookies">Cookies and tracking</h2>
+      <p>This site uses no cookies. No analytics scripts &mdash; no Google Analytics, Plausible, Hotjar, Mixpanel, or anything else. No tracking pixels. No fingerprinting. No advertising networks.</p>
+      <p>The only JavaScript on the site is the form-submission logic on <a href="/apply">/apply</a>, which runs entirely in your browser and only sends your form data when you click submit.</p>
+      <p>Cloudflare may set a brief security cookie in some abuse-detection scenarios; that's a platform-level thing and not something I configure.</p>
+    </section>
+
+    <hr class="rule" />
+
+    <section class="policy" aria-labelledby="rights">
+      <h2 id="rights">Your rights</h2>
+      <p>Under modern data protection law you can ask me at any time to:</p>
+      <ul>
+        <li>Show you what data I have about you (<em>access</em>)</li>
+        <li>Correct it if it's wrong (<em>rectification</em>)</li>
+        <li>Delete it (<em>erasure</em>)</li>
+        <li>Restrict how I use it (<em>restriction</em>)</li>
+        <li>Hand it to you in a portable format (<em>portability</em>)</li>
+        <li>Object to me using it on a legitimate-interest basis (<em>objection</em>)</li>
+        <li>Stop emailing you (<em>marketing opt-out</em>) &mdash; though for the "stay in the loop" list this is also a one-click unsubscribe in every email</li>
+      </ul>
+      <p>Email <a href="mailto:dan@tavernos.ai">dan@tavernos.ai</a> with the request. I'll act within 7 days. There's no fee.</p>
+      <p>If you think I haven't handled your request properly, you can complain to your country's data protection authority. <strong>If you are in the United States, you can complain to the <a href="https://reportfraud.ftc.gov/" target="_blank" rel="noopener">Federal Trade Commission</a> or to your state attorney general&rsquo;s office; California residents may also contact <a href="https://cppa.ca.gov/" target="_blank" rel="noopener">CalPrivacy</a> (the California Privacy Protection Agency).</strong> If you're an EU resident, you can complain to your member state's data protection authority.</p>
+    </section>
+
+    <hr class="rule" />
+
+    <section class="policy" aria-labelledby="security">
+      <h2 id="security">Security</h2>
+      <p>I take reasonable steps to keep your data secure: TLS on every connection to the site; secrets stored as Cloudflare Worker secrets, never in source code; least-privilege access on third-party tools. I'm a one-person operation, not a SOC-2-certified enterprise. If you're in a regulated industry that needs formal compliance attestations, tell me before you apply and we can talk about whether TavernOS is the right fit.</p>
+      <p>If I ever discover a breach affecting your data, I'll email you within 72 hours and report to the relevant supervisory authority in <strong>the United States</strong> as required by law.</p>
+    </section>
+
+    <hr class="rule" />
+
+    <section class="policy" aria-labelledby="children">
+      <h2 id="children">Children</h2>
+      <p>TavernOS is for working professionals. The site isn't directed at children, and I don't knowingly collect data from anyone under 16. If you believe a child has submitted information, email me and I'll delete it.</p>
+    </section>
+
+    <hr class="rule" />
+
+    <section class="policy" aria-labelledby="changes">
+      <h2 id="changes">Changes to this policy</h2>
+      <p>If I change anything meaningful about how data is handled, I'll update this page and the date at the top, and I'll email anyone currently in the trial cohort or on the "stay in the loop" list. Small wording fixes don't trigger an email.</p>
+    </section>
+
+    <footer>
+      <span>tavernos.ai</span>
+      <a href="/privacy" aria-current="page">privacy</a>
+      <a href="mailto:dan@tavernos.ai">dan@tavernos.ai</a>
+    </footer>
+  </main>
+</body>
+</html>
