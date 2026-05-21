@@ -171,6 +171,26 @@ body::before {
   letter-spacing: 0.03em;
 }
 
+/* Mac quick-reference disclosure (collapsed by default; call funnel stays primary) */
+.mac-ref { margin-top: 14px; }
+.mac-ref summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13.5px;
+  color: var(--teal);
+  letter-spacing: 0.01em;
+  list-style: none;
+}
+.mac-ref summary::-webkit-details-marker { display: none; }
+.mac-ref summary::before { content: "▸ "; }
+.mac-ref[open] summary::before { content: "▾ "; }
+.mac-ref summary:hover { text-decoration: underline; }
+.mac-ref .mac-ref-body { margin-top: 12px; }
+.mac-ref .mac-ref-body p { font-size: 13.5px; line-height: 1.55; margin: 0 0 10px; }
+.mac-ref .mac-ref-step { font-weight: 600; font-size: 13px; color: var(--navy); margin: 16px 0 2px; }
+.mac-ref .mac-ref-step:first-of-type { margin-top: 6px; }
+.mac-ref .code { margin: 6px 0 4px; }
+
 /* Section heading */
 h2.section {
   font-family: 'Fraunces', Georgia, serif;
@@ -508,7 +528,38 @@ code.inline {
 
   <div class="callout" style="background: #EAF6F5; border-left-color: var(--teal);">
     <strong>On a Mac?</strong>
-    The install is similar but a few commands differ. Rather than have you guess, email <a href="mailto:contact@tavernos.ai" style="color: var(--teal);">contact@tavernos.ai</a> and I'll walk you through it on a 15-minute call. The instructions below are written for Windows 10 or 11.
+    The install is similar but a few commands differ. If you'd rather not guess, email <a href="mailto:contact@tavernos.ai" style="color: var(--teal);">contact@tavernos.ai</a> and I'll walk you through it on a 15-minute call. The numbered steps below are written for Windows 10 or 11 — but if you're comfortable in Terminal, the differences are small and listed here.
+    <details class="mac-ref">
+      <summary>Show the Mac equivalents</summary>
+      <div class="mac-ref-body">
+        <p>Follow the same numbered steps below, with these substitutions. Everything else (download, unzip, the Anthropic key, the license email) is identical. Use the macOS <strong>Terminal</strong> app (in Applications → Utilities, or press <strong>Cmd + Space</strong> and type <code class="inline">Terminal</code>) wherever the steps say PowerShell. Mac has no execution-policy step, so skip that line in Step 05.</p>
+
+        <div class="mac-ref-step">Step 04 — point Terminal at the folder</div>
+        <div class="code"><button class="copy-btn" onclick="copyCode(this)">Copy</button>cd ~/Downloads/tavernos</div>
+
+        <div class="mac-ref-step">Step 05 — create and activate the environment</div>
+        <div class="code"><button class="copy-btn" onclick="copyCode(this)">Copy</button>python3 -m venv .venv
+source .venv/bin/activate</div>
+
+        <div class="mac-ref-step">Step 07 — start TavernOS</div>
+        <div class="code"><button class="copy-btn" onclick="copyCode(this)">Copy</button>python3 norm.py</div>
+
+        <div class="mac-ref-step">Step 08 — put the license file in place</div>
+        <div class="code"><button class="copy-btn" onclick="copyCode(this)">Copy</button>cp ~/Downloads/your-license.tavernlicense ~/.tavernos/license.tavernlicense</div>
+        <p>Your install ID is saved at <code class="inline">~/.tavernos/install_id</code> if you need to look it up again.</p>
+
+        <div class="mac-ref-step">Where your deliverables land</div>
+        <div class="code"><button class="copy-btn" onclick="copyCode(this)">Copy</button>~/.tavernos/clients/_self/deliverables/</div>
+
+        <div class="mac-ref-step">Browser version, and starting up next time</div>
+        <p>Add <code class="inline">--web</code> to run in a browser tab: <code class="inline">python3 norm.py --web</code>. To start a later session from scratch:</p>
+        <div class="code"><button class="copy-btn" onclick="copyCode(this)">Copy</button>cd ~/Downloads/tavernos
+source .venv/bin/activate
+python3 norm.py</div>
+
+        <p>If anything doesn't match or looks scary, email <a href="mailto:contact@tavernos.ai" style="color: var(--teal);">contact@tavernos.ai</a> and we'll jump on a call.</p>
+      </div>
+    </details>
   </div>
 
   <!-- REFERENCE DOCS -->
@@ -657,11 +708,33 @@ pip install .</div>
   <ul class="body">
     <li>Right-click inside PowerShell to paste your key.</li>
     <li>Press <strong>Enter</strong>.</li>
-    <li>You're in. You'll see a welcome message and a prompt where you can type.</li>
+    <li>A welcome message will appear from <strong>Hill</strong> — the account agent. On a brand-new install, Hill is the only crew member who answers, because your license hasn't been activated yet. That's the next step — and it's normal.</li>
   </ul>
 
   <!-- STEP 8 -->
-  <h2 class="section"><span class="step-num">08</span> Try it</h2>
+  <h2 class="section"><span class="step-num">08</span> Activate your license</h2>
+  <p class="body">
+    On first run, TavernOS generates an <strong>install ID</strong> — a short string that identifies this computer. Hill will display it in his welcome message and ask you to send it over so we can issue your license file.
+  </p>
+  <ul class="body">
+    <li>Copy the install ID from Hill's welcome message. (It's also saved on disk at <code class="inline">$HOME\.tavernos\install_id</code> if you ever need to look it up again.)</li>
+    <li>Email it to <a href="mailto:support@tavernos.ai" style="color: var(--teal); text-decoration: none; border-bottom: 1px solid currentColor;">support@tavernos.ai</a> with your name and company. We'll mint a license file and email it back, usually within one business day.</li>
+    <li>Save the attached <code class="inline">.tavernlicense</code> file to your Downloads folder.</li>
+    <li>In PowerShell, copy it into place with this command (adjust the source filename if yours is different — the destination filename must stay exactly <code class="inline">license.tavernlicense</code>):</li>
+  </ul>
+
+  <div class="code">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button>Copy-Item "$HOME\Downloads\your-license.tavernlicense" "$HOME\.tavernos\license.tavernlicense"</div>
+
+  <p class="body">
+    Now restart TavernOS. Type <code class="inline">/exit</code> to close the current session, then run <code class="inline">python norm.py</code> again. This time the full crew loads — Sam will greet you, and you can route work to any specialist on the menu you've licensed.
+  </p>
+  <p class="body sub">
+    If only Hill responds again after restart, the license file isn't in the right place or doesn't match this install. Forward what Hill says to <a href="mailto:support@tavernos.ai" style="color: var(--teal); text-decoration: none; border-bottom: 1px solid currentColor;">support@tavernos.ai</a> and we'll sort it.
+  </p>
+
+  <!-- STEP 9 -->
+  <h2 class="section"><span class="step-num">09</span> Try it</h2>
   <p class="body">
     You're now talking to Sam, a coordinator who routes your request to the right specialist agent. Try one of these by typing it and pressing <strong>Enter</strong>:
   </p>
@@ -670,7 +743,7 @@ pip install .</div>
     <li><code>Cliff, research SMB project-management tool adoption in creative agencies</code></li>
     <li><code>/eval last</code> — shows a score for the most recent deliverable</li>
     <li><code>/scores --deliverables</code> — lists everything TavernOS has produced</li>
-    <li><code>/exit</code> — quits (you can come back anytime, see Step 10)</li>
+    <li><code>/exit</code> — quits (you can come back anytime, see Step 11)</li>
   </ul>
   <p class="body">
     Finished deliverables land in this folder on your computer:
@@ -681,8 +754,8 @@ pip install .</div>
     Open them in Word, Excel, or your browser &mdash; <code class="inline">.docx</code> and <code class="inline">.xlsx</code> open in Office, decks open as <code class="inline">.html</code>. Tell me what's good, what's wrong, what's weird. That's the whole trial.
   </p>
 
-  <!-- STEP 9 -->
-  <h2 class="section"><span class="step-num">09</span> Prefer a browser? Try web mode</h2>
+  <!-- STEP 10 -->
+  <h2 class="section"><span class="step-num">10</span> Prefer a browser? Try web mode</h2>
   <p class="body">
     If you'd rather use TavernOS in a browser tab instead of PowerShell, type this into PowerShell (after Step 07 has finished at least once) and press <strong>Enter</strong>:
   </p>
@@ -692,8 +765,8 @@ pip install .</div>
     A browser tab opens with the same agents, same commands, but a chat-window interface instead of text-in-a-terminal. PowerShell stays open in the background while this runs — close PowerShell and the web page stops working. Pick whichever interface you prefer; you can switch run-to-run.
   </p>
 
-  <!-- STEP 10 -->
-  <h2 class="section"><span class="step-num">10</span> Using TavernOS next time</h2>
+  <!-- STEP 11 -->
+  <h2 class="section"><span class="step-num">11</span> Using TavernOS next time</h2>
   <p class="body">
     Once it's installed, coming back is three commands. Copy them one at a time — each after the previous one finishes.
   </p>
@@ -705,8 +778,8 @@ python norm.py</div>
     The second command activates the environment we set up in Step 05. The third starts TavernOS. Use <code class="inline">python norm.py --web</code> for the last line if you want the browser version.
   </p>
 
-  <!-- STEP 11 -->
-  <h2 class="section"><span class="step-num">11</span> If something goes wrong</h2>
+  <!-- STEP 12 -->
+  <h2 class="section"><span class="step-num">12</span> If something goes wrong</h2>
   <p class="body">
     Most common issues and what to do:
   </p>
@@ -715,11 +788,12 @@ python norm.py</div>
     <li><strong>"Cannot find path… tavernos"</strong> — the unzipped folder landed somewhere other than Downloads. Email me and include where you actually unzipped it.</li>
     <li><strong>Red "Execution Policy" error</strong> — Step 05's first line didn't run. Copy just that one line (<code class="inline">Set-ExecutionPolicy…</code>) and paste it into PowerShell by itself, then re-try Step 05.</li>
     <li><strong>"Invalid API key" or authentication errors</strong> — go back to console.anthropic.com, create a new key, and use that one. Make sure you didn't copy extra spaces.</li>
+    <li><strong>"Only Hill is responding — where is everyone else?"</strong> — your license file is missing, in the wrong place, or doesn't match this install. Check that <code class="inline">$HOME\.tavernos\license.tavernlicense</code> exists. If it does and Hill still says your account is in arrears or similar, copy what Hill says and send it to <a href="mailto:support@tavernos.ai" style="color: var(--teal); text-decoration: none; border-bottom: 1px solid currentColor;">support@tavernos.ai</a>. See Step 08 for the full activation walkthrough.</li>
     <li><strong>Anything else, or anything that looks scary</strong> — screenshot the PowerShell window and email it to <a href="mailto:contact@tavernos.ai" style="color: var(--teal); text-decoration: none; border-bottom: 1px solid currentColor;">contact@tavernos.ai</a>. I'll jump on a call with you.</li>
   </ul>
 
   <!-- Reporting back -->
-  <h2 class="section"><span class="step-num">12</span> What to tell me</h2>
+  <h2 class="section"><span class="step-num">13</span> What to tell me</h2>
   <p class="body">
     Three things I care about most, in rough order:
   </p>
@@ -733,7 +807,7 @@ python norm.py</div>
   </p>
 
   <!-- Known rough edges -->
-  <h2 class="section"><span class="step-num">13</span> Known rough edges</h2>
+  <h2 class="section"><span class="step-num">14</span> Known rough edges</h2>
   <p class="body">Things I already know don't work well; no need to report these:</p>
   <ul class="body">
     <li>No multi-user support. This is a single-operator tool right now — you and the machine.</li>
